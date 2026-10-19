@@ -1,0 +1,6 @@
+# ไฟล์ที่ไม่ควรขึ้น Git
+node_modules/
+.wrangler/
+.dev.vars
+.DS_Store
+admin-password.sql

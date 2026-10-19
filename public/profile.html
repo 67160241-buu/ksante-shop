@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!-- หน้าโปรไฟล์: ประวัติคำสั่งซื้อ + Timeline, แก้ไขข้อมูล, ที่อยู่เริ่มต้น, เปลี่ยนรหัสผ่าน -->
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>บัญชีของฉัน | K'Sante</title>
+  <meta name="description" content="โปรไฟล์และประวัติคำสั่งซื้อ K'Sante">
+  <meta name="theme-color" content="#F8F9FA">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+  <!-- สีและฟอนต์ของแบรนด์ (ต้องโหลดก่อน Tailwind) -->
+  <script src="/js/theme.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3/dist/index.global.js"></script>
+</head>
+<body class="font-sans min-h-screen flex flex-col">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] btn btn-primary">ข้ามไปเนื้อหาหลัก</a>
+  <div id="site-header"></div>
+
+  <main id="main" class="flex-1">
+
+    <section class="max-w-6xl mx-auto px-4 pt-8">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div><p class="eyebrow text-cobalt">My Account</p><h1 class="font-display font-bold text-4xl mt-1" id="hello">บัญชีของฉัน</h1></div>
+        <button id="logout" class="btn btn-outline btn-sm"><span data-icon="log-out" data-cls="w-4 h-4"></span> ออกจากระบบ</button>
+      </div>
+      <div class="flex gap-2 mt-6 overflow-x-auto no-scrollbar" role="tablist">
+        <button class="chip chip-on" role="tab" data-tab="orders" aria-selected="true"><span data-icon="receipt" data-cls="w-4 h-4"></span> คำสั่งซื้อ</button>
+        <button class="chip" role="tab" data-tab="profile" aria-selected="false"><span data-icon="user" data-cls="w-4 h-4"></span> ข้อมูลส่วนตัว</button>
+        <button class="chip" role="tab" data-tab="address" aria-selected="false"><span data-icon="map-pin" data-cls="w-4 h-4"></span> ที่อยู่จัดส่ง</button>
+        <button class="chip" role="tab" data-tab="security" aria-selected="false"><span data-icon="lock" data-cls="w-4 h-4"></span> รหัสผ่าน</button>
+      </div>
+
+      <div data-panel="orders" class="mt-6" role="tabpanel"><div id="orders"><div class="card p-10 skeleton h-40"></div></div></div>
+
+      <div data-panel="profile" class="mt-6" role="tabpanel" hidden>
+        <form id="profile-form" class="card p-6 max-w-xl space-y-4" novalidate>
+          <div><label class="label" for="pf_name">ชื่อ-นามสกุล</label><input class="input" id="pf_name" name="full_name" required maxlength="100"></div>
+          <div><label class="label" for="pf_email">อีเมล (ใช้เข้าสู่ระบบ เปลี่ยนไม่ได้)</label><input class="input bg-mist" id="pf_email" disabled></div>
+          <div><label class="label" for="pf_phone">เบอร์โทรศัพท์</label><input class="input" id="pf_phone" name="phone" inputmode="tel" maxlength="10"></div>
+          <div class="form-error rounded-xl bg-danger-soft text-danger text-sm font-semibold p-3 flex gap-2" hidden></div>
+          <button class="btn btn-primary"><span data-icon="save" data-cls="w-4 h-4"></span> บันทึก</button>
+        </form></div>
+
+      <div data-panel="address" class="mt-6" role="tabpanel" hidden>
+        <form id="address-form" class="card p-6 max-w-xl space-y-4" novalidate>
+          <p class="text-sm text-ink-soft">ที่อยู่นี้จะถูกกรอกให้อัตโนมัติในหน้าชำระเงิน</p>
+          <div><label class="label" for="ad_line">บ้านเลขที่ ถนน ซอย แขวง/ตำบล</label><input class="input" id="ad_line" name="address_line" required maxlength="300"></div>
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div><label class="label" for="ad_district">เขต/อำเภอ</label><input class="input" id="ad_district" name="district" required maxlength="100"></div>
+            <div><label class="label" for="ad_province">จังหวัด</label><input class="input" id="ad_province" name="province" required maxlength="100"></div>
+            <div><label class="label" for="ad_postal">รหัสไปรษณีย์</label><input class="input" id="ad_postal" name="postal_code" required inputmode="numeric" maxlength="5"></div></div>
+          <div class="form-error rounded-xl bg-danger-soft text-danger text-sm font-semibold p-3 flex gap-2" hidden></div>
+          <div class="flex gap-2"><button class="btn btn-primary"><span data-icon="save" data-cls="w-4 h-4"></span> บันทึกที่อยู่</button>
+            <button type="button" id="address-clear" class="btn btn-ghost border border-line">ลบที่อยู่</button></div>
+        </form></div>
+
+      <div data-panel="security" class="mt-6" role="tabpanel" hidden>
+        <form id="password-form" class="card p-6 max-w-xl space-y-4" novalidate>
+          <div><label class="label" for="pw_current">รหัสผ่านปัจจุบัน</label><input class="input" id="pw_current" name="current_password" type="password" required autocomplete="current-password"></div>
+          <div><label class="label" for="pw_new">รหัสผ่านใหม่</label><input class="input" id="pw_new" name="new_password" type="password" required minlength="8" autocomplete="new-password">
+            <p class="text-xs text-ink-soft mt-1.5">อย่างน้อย 8 ตัว มีทั้งตัวอักษรและตัวเลข</p></div>
+          <div class="form-error rounded-xl bg-danger-soft text-danger text-sm font-semibold p-3 flex gap-2" hidden></div>
+          <button class="btn btn-primary"><span data-icon="lock" data-cls="w-4 h-4"></span> เปลี่ยนรหัสผ่าน</button>
+        </form></div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <!-- สคริปต์ส่วนกลาง: ข้อมูลร้าน -> ไอคอน -> ตัวช่วยหลัก/Header/Footer -> ตะกร้า -> Cookie Consent -->
+  <script src="/js/config.js" defer></script>
+  <script src="/js/icons.js" defer></script>
+  <script src="/js/app.js" defer></script>
+  <script src="/js/cart.js" defer></script>
+  <script src="/js/cookie.js" defer></script>
+  <script src="/js/pages/profile.js" defer></script>
+</body>
+</html>

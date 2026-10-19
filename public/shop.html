@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<!-- หน้า Catalog / Shop: ค้นหา + ตัวกรอง (หมวดหมู่ ขนาด สี ราคา) + เรียงลำดับ -->
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ร้านค้า | K'Sante</title>
+  <meta name="description" content="เลือกซื้อหมวก K'Sante ทั้งหมด ค้นหาและกรองตามหมวดหมู่ ขนาด สี และราคา">
+  <meta name="theme-color" content="#F8F9FA">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+  <!-- สีและฟอนต์ของแบรนด์ (ต้องโหลดก่อน Tailwind) -->
+  <script src="/js/theme.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3/dist/index.global.js"></script>
+</head>
+<body class="font-sans min-h-screen flex flex-col">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] btn btn-primary">ข้ามไปเนื้อหาหลัก</a>
+  <div id="site-header"></div>
+
+  <main id="main" class="flex-1">
+
+    <section class="max-w-7xl mx-auto px-4 pt-8">
+      <nav class="text-xs text-ink-soft" aria-label="breadcrumb"><a href="/" class="hover:text-ink">หน้าแรก</a> / <span class="text-ink font-bold">ร้านค้า</span></nav>
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mt-3">
+        <div><h1 id="shop-title" class="font-display font-bold text-4xl">สินค้าทั้งหมด</h1><p id="shop-count" class="text-sm text-ink-soft mt-1" aria-live="polite">กำลังโหลด...</p></div>
+        <form id="shop-search" class="flex gap-2 w-full md:w-auto" role="search">
+          <label for="q" class="sr-only">ค้นหาสินค้า</label>
+          <div class="relative flex-1 md:w-72"><span class="absolute left-3 top-3 text-ink-soft" data-icon="search" data-cls="w-4 h-4"></span>
+            <input id="q" name="q" class="input pl-9" placeholder="ค้นหาชื่อสินค้า วัสดุ..." maxlength="60" autocomplete="off"></div>
+          <button class="btn btn-primary">ค้นหา</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="max-w-7xl mx-auto px-4 mt-6 grid lg:grid-cols-[260px_1fr] gap-8">
+      <!-- แผงตัวกรอง (บนมือถือเป็น drawer) -->
+      <aside id="filters-panel" class="hidden lg:block" aria-label="ตัวกรองสินค้า">
+        <div id="filters" class="space-y-7 lg:sticky lg:top-24"></div>
+      </aside>
+
+      <div>
+        <div class="flex flex-wrap items-center gap-2 pb-4 border-b border-line">
+          <button id="filters-open" class="btn btn-outline btn-sm lg:hidden"><span data-icon="sliders-horizontal" data-cls="w-4 h-4"></span> ตัวกรอง</button>
+          <div id="active-filters" class="flex flex-wrap gap-2"></div>
+          <label class="ml-auto flex items-center gap-2 text-sm"><span class="text-ink-soft hidden sm:inline">เรียงตาม</span>
+            <select id="sort" class="input h-9 w-auto text-xs font-bold">
+              <option value="featured">แนะนำ</option><option value="newest">มาใหม่</option>
+              <option value="price-asc">ราคา: ต่ำ → สูง</option><option value="price-desc">ราคา: สูง → ต่ำ</option><option value="name">ชื่อ A → Z</option>
+            </select></label>
+        </div>
+        <div id="grid" class="grid grid-cols-2 xl:grid-cols-3 gap-4 mt-6"></div>
+        <div id="empty" class="text-center py-20" hidden>
+          <p class="font-display font-bold text-2xl">ไม่พบสินค้าที่ตรงกับเงื่อนไข</p>
+          <p class="text-ink-soft mt-2">ลองลดตัวกรองหรือค้นหาด้วยคำอื่น</p>
+          <button id="clear-all" class="btn btn-primary mt-5">ล้างตัวกรองทั้งหมด</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="filters-drawer" class="fixed inset-0 z-50 lg:hidden" hidden>
+      <div class="absolute inset-0 bg-ink/40" data-close></div>
+      <div class="absolute bottom-0 inset-x-0 max-h-[85vh] overflow-y-auto bg-white rounded-t-3xl p-5 modal-panel" role="dialog" aria-modal="true" aria-label="ตัวกรองสินค้า">
+        <div class="flex items-center justify-between mb-4"><h2 class="font-display font-bold text-xl">ตัวกรอง</h2><button class="icon-btn" data-close aria-label="ปิด"><span data-icon="x"></span></button></div>
+        <div id="filters-mobile" class="space-y-7"></div>
+        <button class="btn btn-primary w-full mt-6" data-close>ดูผลลัพธ์</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <!-- สคริปต์ส่วนกลาง: ข้อมูลร้าน -> ไอคอน -> ตัวช่วยหลัก/Header/Footer -> ตะกร้า -> Cookie Consent -->
+  <script src="/js/config.js" defer></script>
+  <script src="/js/icons.js" defer></script>
+  <script src="/js/app.js" defer></script>
+  <script src="/js/cart.js" defer></script>
+  <script src="/js/cookie.js" defer></script>
+  <script src="/js/pages/shop.js" defer></script>
+</body>
+</html>

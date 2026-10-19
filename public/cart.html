@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!-- หน้าตะกร้าสินค้าแบบเต็มหน้า: ตรวจสต็อกจริงกับเซิร์ฟเวอร์ทุกครั้ง -->
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ตะกร้าสินค้า | K'Sante</title>
+  <meta name="description" content="ตะกร้าสินค้า K'Sante">
+  <meta name="theme-color" content="#F8F9FA">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+  <!-- สีและฟอนต์ของแบรนด์ (ต้องโหลดก่อน Tailwind) -->
+  <script src="/js/theme.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3/dist/index.global.js"></script>
+</head>
+<body class="font-sans min-h-screen flex flex-col">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] btn btn-primary">ข้ามไปเนื้อหาหลัก</a>
+  <div id="site-header"></div>
+
+  <main id="main" class="flex-1">
+
+    <section class="max-w-6xl mx-auto px-4 pt-8">
+      <h1 class="font-display font-bold text-4xl">ตะกร้าสินค้า</h1>
+      <div class="grid lg:grid-cols-[1fr_360px] gap-8 mt-6 items-start">
+        <div class="card p-5"><div id="cart-alert" class="hidden"></div><ul id="cart-list"><li class="py-10 text-center text-ink-soft">กำลังตรวจสอบสต็อก...</li></ul></div>
+        <aside id="cart-summary" class="card-block p-6 space-y-4 lg:sticky lg:top-24" aria-label="สรุปยอด"></aside>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <!-- สคริปต์ส่วนกลาง: ข้อมูลร้าน -> ไอคอน -> ตัวช่วยหลัก/Header/Footer -> ตะกร้า -> Cookie Consent -->
+  <script src="/js/config.js" defer></script>
+  <script src="/js/icons.js" defer></script>
+  <script src="/js/app.js" defer></script>
+  <script src="/js/cart.js" defer></script>
+  <script src="/js/cookie.js" defer></script>
+  <script src="/js/pages/cart-page.js" defer></script>
+</body>
+</html>

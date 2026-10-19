@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!-- หน้านโยบายคุกกี้: ตารางคุกกี้ทุกตัว + ปุ่มเปิดหน้าต่างตั้งค่า -->
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>นโยบายคุกกี้ | K'Sante</title>
+  <meta name="description" content="นโยบายคุกกี้ของ K'Sante และวิธีตั้งค่าความยินยอม">
+  <meta name="theme-color" content="#F8F9FA">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+  <!-- สีและฟอนต์ของแบรนด์ (ต้องโหลดก่อน Tailwind) -->
+  <script src="/js/theme.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3/dist/index.global.js"></script>
+</head>
+<body class="font-sans min-h-screen flex flex-col">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] btn btn-primary">ข้ามไปเนื้อหาหลัก</a>
+  <div id="site-header"></div>
+
+  <main id="main" class="flex-1">
+
+    <article class="max-w-3xl mx-auto px-4 pt-10 prose-ks">
+      <p class="eyebrow text-cobalt">Cookie Policy</p>
+      <h1 class="font-display font-bold text-4xl mt-1 text-ink">นโยบายคุกกี้</h1>
+      <p>ปรับปรุงล่าสุด 19 ตุลาคม 2569 (เวอร์ชัน 1)</p>
+      <p>คุกกี้ (Cookie) และพื้นที่จัดเก็บในเบราว์เซอร์ (Local Storage) คือข้อมูลขนาดเล็กที่เว็บไซต์บันทึกไว้ในอุปกรณ์ของคุณ
+        K'Sante ใช้เฉพาะคุกกี้ของเราเอง (First-party) ไม่มีคุกกี้ของบุคคลภายนอกเพื่อติดตามโฆษณา</p>
+      <p class="not-prose"><button type="button" class="btn btn-primary" onclick="KS.consent.openSettings()">เปิดหน้าต่างตั้งค่าคุกกี้</button></p>
+      <p id="consent-status" class="text-sm"></p>
+
+      <h2>ประเภทคุกกี้ที่เราใช้</h2>
+      <table><thead><tr><th>ชื่อ</th><th>ประเภท</th><th>วัตถุประสงค์</th><th>อายุ</th></tr></thead><tbody>
+        <tr><td>ks_session</td><td>จำเป็น (Cookie, HttpOnly)</td><td>คงสถานะการเข้าสู่ระบบของลูกค้า</td><td>7 วัน</td></tr>
+        <tr><td>ks_admin</td><td>จำเป็น (Cookie, HttpOnly)</td><td>คงสถานะการเข้าสู่ระบบของผู้ดูแลระบบ</td><td>8 ชั่วโมง</td></tr>
+        <tr><td>ks_cart</td><td>จำเป็น (Local Storage)</td><td>เก็บรายการสินค้าในตะกร้า</td><td>จนกว่าจะล้างตะกร้า</td></tr>
+        <tr><td>ks_consent</td><td>จำเป็น (Cookie + Local Storage)</td><td>จำการตั้งค่าความยินยอมคุกกี้ เพื่อไม่ถามซ้ำ</td><td>180 วัน</td></tr>
+        <tr><td>ks_vid</td><td>จำเป็น (Local Storage)</td><td>รหัสสุ่มสำหรับบันทึกหลักฐานการให้ความยินยอม</td><td>จนกว่าจะล้างข้อมูลเบราว์เซอร์</td></tr>
+        <tr><td>ks_aid</td><td>วิเคราะห์ (Analytics)</td><td>รหัสสุ่มสำหรับนับจำนวนการเข้าชมหน้าเว็บแบบไม่ระบุตัวตน</td><td>จนกว่าจะถอนความยินยอม</td></tr>
+        <tr><td>ks_pref_shop</td><td>ตั้งค่า (Preferences)</td><td>จำตัวกรองและการเรียงสินค้าล่าสุดในหน้าร้านค้า</td><td>จนกว่าจะถอนความยินยอม</td></tr>
+        <tr><td>ks_recent</td><td>ตั้งค่า (Preferences)</td><td>จำสินค้าที่คุณเพิ่งดู (สูงสุด 8 รายการ)</td><td>จนกว่าจะถอนความยินยอม</td></tr>
+        <tr><td>ks_utm</td><td>การตลาด (Marketing, Cookie)</td><td>จำชื่อแคมเปญจากลิงก์ที่มี utm_source เพื่อวัดผลโฆษณา</td><td>30 วัน</td></tr>
+      </tbody></table>
+
+      <h2>การขอความยินยอม</h2>
+      <ul>
+        <li>คุกกี้ที่จำเป็นเปิดใช้งานเสมอ เพราะเว็บไซต์ทำงานไม่ได้หากไม่มี</li>
+        <li>คุกกี้วิเคราะห์ ตั้งค่า และการตลาด <b>ปิดไว้เป็นค่าเริ่มต้น</b> และจะไม่ถูกบันทึกจนกว่าคุณจะกด "ยอมรับ" หรือเปิดในหน้าตั้งค่า</li>
+        <li>ฝั่งเซิร์ฟเวอร์ตรวจสอบซ้ำ: API เก็บสถิติจะไม่บันทึกข้อมูลใด ๆ ถ้าไม่พบความยินยอม Analytics ใน cookie ks_consent</li>
+        <li>เมื่อคุณถอนความยินยอมประเภทใด ระบบจะลบข้อมูลของประเภทนั้นออกจากเบราว์เซอร์ทันที</li>
+        <li>ทุกครั้งที่คุณให้หรือเปลี่ยนความยินยอม เราจะบันทึกหลักฐาน (ตัวเลือก เวลา และ IP) ไว้ตามข้อกำหนดของ PDPA</li>
+      </ul>
+
+      <h2>การจัดการคุกกี้ผ่านเบราว์เซอร์</h2>
+      <p>คุณสามารถลบหรือบล็อกคุกกี้ได้จากการตั้งค่าเบราว์เซอร์ แต่หากบล็อกคุกกี้ที่จำเป็น ตะกร้าสินค้าและการเข้าสู่ระบบจะใช้งานไม่ได้</p>
+      <p>สอบถามเพิ่มเติม: <a class="link" href="mailto:privacy@ksante.com">privacy@ksante.com</a> · ดู <a class="link" href="/privacy-policy">นโยบายความเป็นส่วนตัว</a></p>
+    </article>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <!-- สคริปต์ส่วนกลาง: ข้อมูลร้าน -> ไอคอน -> ตัวช่วยหลัก/Header/Footer -> ตะกร้า -> Cookie Consent -->
+  <script src="/js/config.js" defer></script>
+  <script src="/js/icons.js" defer></script>
+  <script src="/js/app.js" defer></script>
+  <script src="/js/cart.js" defer></script>
+  <script src="/js/cookie.js" defer></script>
+  <script src="/js/pages/static.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!-- หน้ารายละเอียดสินค้า: เปลี่ยนรูปตามสี, เลือกไซซ์พร้อมสต็อก, ตารางสี, Size Guide -->
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>รายละเอียดสินค้า | K'Sante</title>
+  <meta name="description" content="รายละเอียดหมวก K'Sante สี ขนาด วัสดุ และตารางไซซ์">
+  <meta name="theme-color" content="#F8F9FA">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+  <!-- สีและฟอนต์ของแบรนด์ (ต้องโหลดก่อน Tailwind) -->
+  <script src="/js/theme.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3/dist/index.global.js"></script>
+</head>
+<body class="font-sans min-h-screen flex flex-col">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] btn btn-primary">ข้ามไปเนื้อหาหลัก</a>
+  <div id="site-header"></div>
+
+  <main id="main" class="flex-1">
+
+    <div id="product-root" class="max-w-7xl mx-auto px-4 pt-8">
+      <div class="grid lg:grid-cols-2 gap-10">
+        <div class="aspect-square rounded-3xl skeleton"></div>
+        <div class="space-y-4"><div class="h-6 w-1/3 rounded skeleton"></div><div class="h-10 w-2/3 rounded skeleton"></div><div class="h-24 rounded skeleton"></div></div>
+      </div>
+    </div>
+
+    <!-- Size Guide (เปิดเป็น Modal) -->
+    <div id="size-guide" class="fixed inset-0 z-[85] grid place-items-center p-4" hidden>
+      <div class="absolute inset-0 bg-ink/50" data-close></div>
+      <div class="relative card-block w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 modal-panel" role="dialog" aria-modal="true" aria-labelledby="sg-title">
+        <div class="flex items-start justify-between"><div><p class="eyebrow text-cobalt">Size Guide</p><h2 id="sg-title" class="font-display font-bold text-2xl mt-1">ตารางไซซ์ตามรอบศีรษะ</h2></div>
+          <button class="icon-btn" data-close aria-label="ปิด"><span data-icon="x"></span></button></div>
+        <div class="overflow-x-auto mt-5"><table class="w-full text-sm">
+          <thead><tr class="bg-mist text-left"><th class="p-3 rounded-l-xl">ไซซ์</th><th class="p-3">รอบศีรษะ (ซม.)</th><th class="p-3">รอบศีรษะ (นิ้ว)</th><th class="p-3 rounded-r-xl">เหมาะกับ</th></tr></thead>
+          <tbody class="divide-y divide-line">
+            <tr><td class="p-3 font-bold">S</td><td class="p-3 tabular">54 - 55</td><td class="p-3 tabular">21¼ - 21⅝</td><td class="p-3 text-ink-soft">ศีรษะเล็ก ใส่กระชับ</td></tr>
+            <tr><td class="p-3 font-bold">M</td><td class="p-3 tabular">56 - 57</td><td class="p-3 tabular">22 - 22½</td><td class="p-3 text-ink-soft">ขนาดยอดนิยม</td></tr>
+            <tr><td class="p-3 font-bold">L</td><td class="p-3 tabular">58 - 59</td><td class="p-3 tabular">22⅞ - 23¼</td><td class="p-3 text-ink-soft">ใส่สบาย หลวมเล็กน้อย</td></tr>
+            <tr><td class="p-3 font-bold">XL</td><td class="p-3 tabular">60 - 61</td><td class="p-3 tabular">23⅝ - 24</td><td class="p-3 text-ink-soft">ศีรษะใหญ่ หรือผมหนา/ถักเปีย</td></tr>
+          </tbody></table></div>
+        <h3 class="font-bold mt-6">วิธีวัดรอบศีรษะ</h3>
+        <ol class="mt-2 space-y-2 text-sm text-ink-soft list-decimal pl-5">
+          <li>ใช้สายวัดแบบนิ่ม (หรือเชือกแล้วนำมาวัดกับไม้บรรทัด)</li>
+          <li>พันรอบศีรษะ ผ่านหน้าผากเหนือคิ้วประมาณ 1 ซม. และเหนือใบหู</li>
+          <li>อ่านค่าตรงจุดที่สายวัดบรรจบกัน ถ้าอยู่ระหว่าง 2 ไซซ์ แนะนำให้เลือกไซซ์ใหญ่กว่า</li>
+        </ol>
+        <p class="text-xs text-ink-soft mt-4">1 นิ้ว = 2.54 ซม. · Beanies และ Berets ผ้ายืด ใส่ได้คร่อมไซซ์ ±1 ซม.</p>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <!-- สคริปต์ส่วนกลาง: ข้อมูลร้าน -> ไอคอน -> ตัวช่วยหลัก/Header/Footer -> ตะกร้า -> Cookie Consent -->
+  <script src="/js/config.js" defer></script>
+  <script src="/js/icons.js" defer></script>
+  <script src="/js/app.js" defer></script>
+  <script src="/js/cart.js" defer></script>
+  <script src="/js/cookie.js" defer></script>
+  <script src="/js/pages/product.js" defer></script>
+</body>
+</html>

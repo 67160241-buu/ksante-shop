@@ -1,0 +1,18 @@
+# ============================================================================
+# K'Sante Headwear : การตั้งค่า Cloudflare Pages + D1
+# ============================================================================
+name = "ksante-shop"                       # ชื่อโปรเจกต์บน Cloudflare Pages
+compatibility_date = "2026-10-01"
+pages_build_output_dir = "./public"         # โฟลเดอร์ไฟล์หน้าเว็บที่จะอัปโหลด
+
+# ผูกฐานข้อมูล D1 เข้ากับโค้ด: ใน Functions เรียกใช้ผ่าน env.DB
+# ขั้นตอน: รัน  npx wrangler d1 create ksante-db  แล้วนำ database_id ที่ได้มาใส่แทนค่าด้านล่าง
+[[d1_databases]]
+binding = "DB"
+database_name = "ksante-db"
+database_id = "6ad8f7d2-7ab2-4e78-95e3-39ee99d12213"
+
+# ตัวแปรที่ไม่เป็นความลับ (ค่าความลับอย่าง JWT_SECRET ให้ตั้งเป็น Secret แยก ดู DEPLOYMENT.md)
+[vars]
+SHIPPING_FEE = "60"
+FREE_SHIPPING_THRESHOLD = "2500"

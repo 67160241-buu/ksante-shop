@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!-- หน้าเข้าสู่ระบบผู้ดูแลระบบ (แยกจากลูกค้า ใช้ /api/auth/admin-login)
+     หน้านี้ถูกป้องกันโดย functions/admin/_middleware.js : ต้องมี cookie ks_admin (role = admin) เท่านั้น -->
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>เข้าสู่ระบบผู้ดูแล | K'Sante Admin</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="/js/theme.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3/dist/index.global.js"></script>
+</head>
+<body class="font-sans bg-ink min-h-screen grid place-items-center p-4">
+  <div class="w-full max-w-md">
+    <div class="grid grid-cols-4 h-2 rounded-t-2xl overflow-hidden" aria-hidden="true"><span class="bg-cobalt"></span><span class="bg-tangerine"></span><span class="bg-sage"></span><span class="bg-mustard"></span></div>
+    <main id="main" class="bg-white rounded-b-2xl p-8">
+      <p class="eyebrow text-cobalt flex items-center gap-1.5"><span data-icon="shield-check" data-cls="w-4 h-4"></span> Admin Portal</p>
+      <h1 class="font-display font-bold text-3xl mt-2">เข้าสู่ระบบผู้ดูแล</h1>
+      <p class="text-sm text-ink-soft mt-1">สำหรับเจ้าหน้าที่ร้าน K'Sante เท่านั้น</p>
+      <div id="denied" class="mt-4 rounded-xl bg-mustard-soft text-[#8A5300] text-sm font-semibold p-3" hidden>บัญชีนี้ไม่มีสิทธิ์เข้าถึงหน้าผู้ดูแลระบบ</div>
+      <form id="admin-login" class="mt-6 space-y-4" novalidate>
+        <div><label class="label" for="email">อีเมล</label><input class="input" id="email" name="email" type="email" required autocomplete="username"></div>
+        <div><label class="label" for="password">รหัสผ่าน</label><input class="input" id="password" name="password" type="password" required autocomplete="current-password"></div>
+        <div id="form-error" class="rounded-xl bg-danger-soft text-danger text-sm font-semibold p-3 flex gap-2" hidden></div>
+        <button class="btn btn-primary w-full h-12"><span data-icon="lock" data-cls="w-4 h-4"></span> เข้าสู่ระบบ</button>
+      </form>
+      <div class="mt-6 rounded-2xl bg-mist p-4 text-xs text-ink-soft"><b class="text-ink">บัญชีสาธิต:</b> admin@ksante.com / Admin@1234<br>เปลี่ยนรหัสผ่านก่อนเปิดใช้งานจริง (ดู DEPLOYMENT.md)</div>
+      <a href="/" class="block text-center text-sm font-bold mt-6 hover:text-cobalt">← กลับไปหน้าร้าน</a>
+    </main>
+  </div>
+  <script src="/js/config.js" defer></script>
+  <script src="/js/icons.js" defer></script>
+  <script src="/js/app.js" defer></script>
+  <script src="/js/admin/login.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!-- หน้าเข้าสู่ระบบลูกค้า (แอดมินใช้ /admin/login) -->
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>เข้าสู่ระบบ | K'Sante</title>
+  <meta name="description" content="เข้าสู่ระบบบัญชี K'Sante">
+  <meta name="theme-color" content="#F8F9FA">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+  <!-- สีและฟอนต์ของแบรนด์ (ต้องโหลดก่อน Tailwind) -->
+  <script src="/js/theme.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3/dist/index.global.js"></script>
+</head>
+<body class="font-sans min-h-screen flex flex-col">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] btn btn-primary">ข้ามไปเนื้อหาหลัก</a>
+  <div id="site-header"></div>
+
+  <main id="main" class="flex-1">
+
+    <section class="max-w-5xl mx-auto px-4 pt-10 grid lg:grid-cols-2 gap-10 items-stretch">
+      <div class="card-block p-8">
+        <p class="eyebrow text-cobalt">Welcome back</p>
+        <h1 class="font-display font-bold text-3xl mt-1">เข้าสู่ระบบ</h1>
+        <form id="login-form" class="mt-6 space-y-4" novalidate>
+          <div><label class="label" for="email">อีเมล</label><input class="input" id="email" name="email" type="email" required autocomplete="email"></div>
+          <div><label class="label" for="password">รหัสผ่าน</label>
+            <div class="relative"><input class="input pr-12" id="password" name="password" type="password" required autocomplete="current-password">
+              <button type="button" class="absolute right-1 top-0.5 icon-btn" data-toggle-pw aria-label="แสดงรหัสผ่าน"><span data-icon="eye" data-cls="w-4 h-4"></span></button></div></div>
+          <div id="form-error" class="rounded-xl bg-danger-soft text-danger text-sm font-semibold p-3 flex gap-2" hidden></div>
+          <button class="btn btn-primary w-full h-12">เข้าสู่ระบบ</button>
+        </form>
+        <p class="text-sm text-ink-soft mt-6">ยังไม่มีบัญชี? <a href="/register" id="to-register" class="link text-ink">สมัครสมาชิก</a></p>
+        <div class="mt-6 rounded-2xl bg-mist p-4 text-xs text-ink-soft"><b class="text-ink">บัญชีทดลอง:</b> alex.chen@example.com / Customer@1234</div>
+      </div>
+      <div class="hidden lg:grid grid-cols-2 grid-rows-2 gap-3" aria-hidden="true">
+          <div class="rounded-3xl bg-cobalt"></div><div class="rounded-3xl bg-tangerine-soft grid place-items-center"><span class="font-display font-bold text-5xl text-tangerine">K'</span></div>
+          <div class="rounded-3xl bg-sage-soft"></div><div class="rounded-3xl bg-mustard"></div></div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <!-- สคริปต์ส่วนกลาง: ข้อมูลร้าน -> ไอคอน -> ตัวช่วยหลัก/Header/Footer -> ตะกร้า -> Cookie Consent -->
+  <script src="/js/config.js" defer></script>
+  <script src="/js/icons.js" defer></script>
+  <script src="/js/app.js" defer></script>
+  <script src="/js/cart.js" defer></script>
+  <script src="/js/cookie.js" defer></script>
+  <script src="/js/pages/auth.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+# คัดลอกไฟล์นี้เป็น .dev.vars (ใช้ตอนรันในเครื่องเท่านั้น ห้าม commit ขึ้น Git)
+# สร้างค่าสุ่มด้วยคำสั่ง:  node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+JWT_SECRET=replace-with-a-random-string-at-least-32-characters-long

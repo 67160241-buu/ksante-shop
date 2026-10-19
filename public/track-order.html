@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!-- หน้าติดตามพัสดุ: ใส่เลขคำสั่งซื้อ + อีเมล/เบอร์โทร แล้วแสดง Timeline -->
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ติดตามพัสดุ | K'Sante</title>
+  <meta name="description" content="ติดตามสถานะคำสั่งซื้อและเลขพัสดุ K'Sante">
+  <meta name="theme-color" content="#F8F9FA">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+  <!-- สีและฟอนต์ของแบรนด์ (ต้องโหลดก่อน Tailwind) -->
+  <script src="/js/theme.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3/dist/index.global.js"></script>
+</head>
+<body class="font-sans min-h-screen flex flex-col">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] btn btn-primary">ข้ามไปเนื้อหาหลัก</a>
+  <div id="site-header"></div>
+
+  <main id="main" class="flex-1">
+
+    <section class="max-w-3xl mx-auto px-4 pt-10">
+      <p class="eyebrow text-cobalt">Order Tracking</p>
+      <h1 class="font-display font-bold text-4xl mt-1">ติดตามพัสดุ</h1>
+      <p class="text-ink-soft mt-2">กรอกเลขคำสั่งซื้อ (เช่น KS202610010001) และอีเมลหรือเบอร์โทรที่ใช้สั่งซื้อ</p>
+      <form id="track-form" class="card p-5 mt-6 grid sm:grid-cols-[1fr_1fr_auto] gap-3 items-end" novalidate>
+        <div><label class="label" for="number">เลขคำสั่งซื้อ</label><input class="input uppercase" id="number" name="number" required maxlength="14" placeholder="KS202610010001" autocomplete="off"></div>
+        <div><label class="label" for="contact">อีเมล หรือ เบอร์โทร</label><input class="input" id="contact" name="contact" required maxlength="120" placeholder="you@example.com"></div>
+        <button class="btn btn-primary" id="track-btn"><span data-icon="search" data-cls="w-4 h-4"></span> ค้นหา</button>
+        <div id="track-error" class="sm:col-span-3 rounded-xl bg-danger-soft text-danger text-sm font-semibold p-3 flex gap-2" hidden></div>
+      </form>
+      <div id="track-result" class="mt-6"></div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <!-- สคริปต์ส่วนกลาง: ข้อมูลร้าน -> ไอคอน -> ตัวช่วยหลัก/Header/Footer -> ตะกร้า -> Cookie Consent -->
+  <script src="/js/config.js" defer></script>
+  <script src="/js/icons.js" defer></script>
+  <script src="/js/app.js" defer></script>
+  <script src="/js/cart.js" defer></script>
+  <script src="/js/cookie.js" defer></script>
+  <script src="/js/pages/track.js" defer></script>
+</body>
+</html>
