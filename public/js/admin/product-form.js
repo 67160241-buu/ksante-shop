@@ -21,7 +21,12 @@
       <td class="p-1.5"><input class="input h-9 w-44 uppercase" data-k="sku" value="${esc(r.sku || '')}" aria-label="SKU แถว ${i + 1}"></td>
       <td class="p-1.5"><div class="flex items-center gap-2"><input class="input h-9 w-20 tabular" type="number" min="0" data-k="stock_quantity" value="${r.stock_quantity}" aria-label="สต็อก แถว ${i + 1}">
         ${KS.admin.stockPill(Number(r.stock_quantity) || 0)}</div></td>
-      <td class="p-1.5"><input class="input h-9 w-56" data-k="image_url" value="${esc(r.image_url || '')}" placeholder="ใช้รูปหลักถ้าเว้นว่าง" aria-label="URL รูป แถว ${i + 1}"></td>
+      <td class="p-1.5"><div class="flex items-center gap-1">
+        <span class="w-9 h-9 shrink-0 rounded-lg overflow-hidden border border-line bg-mist grid place-items-center text-ink-soft">${r.image_url
+          ? `<img src="${esc(r.image_url)}" alt="" class="w-full h-full object-cover" onerror="this.src='/img/hat-fallback.svg'">` : KS.icon('image', 'w-4 h-4')}</span>
+        <button type="button" class="icon-btn w-8 h-8" data-upload title="อัปโหลดรูปของสีนี้" aria-label="อัปโหลดรูปสี ${esc(r.color_name || '')} แถว ${i + 1}">${KS.icon('upload', 'w-4 h-4')}</button>
+        <button type="button" class="icon-btn w-8 h-8 disabled:opacity-30" data-edit title="แก้ไขรูปนี้" aria-label="แก้ไขรูป แถว ${i + 1}" ${r.image_url ? '' : 'disabled'}>${KS.icon('crop', 'w-4 h-4')}</button>
+        <input class="input h-9 w-40" data-k="image_url" value="${esc(r.image_url || '')}" placeholder="ใช้รูปหลัก" aria-label="ลิงก์รูป แถว ${i + 1}"></div></td>
       <td class="p-1.5"><button type="button" class="icon-btn w-8 h-8 text-danger" data-remove aria-label="ลบแถว ${i + 1}">${KS.icon('trash2', 'w-4 h-4')}</button></td></tr>`).join('')
       + `<datalist id="size-list">${SIZES.map(s => `<option value="${s}">`).join('')}</datalist>`;
     if (!rows.length) $('#variants').innerHTML = '<tr><td colspan="7" class="p-6 text-center text-ink-soft">ยังไม่มีตัวเลือก กด "สร้างสีใหม่ครบ 4 ไซซ์" เพื่อเริ่ม</td></tr>';
@@ -37,8 +42,21 @@
     if (k === 'color_hex') e.target.nextElementSibling.textContent = e.target.value.toUpperCase();
     if (k === 'stock_quantity') $('#total-stock').textContent = rows.reduce((s, x) => s + (Number(x.stock_quantity) || 0), 0);
   });
-  $('#variants').addEventListener('change', e => { if (e.target.dataset.k === 'stock_quantity') renderRows(); });
-  $('#variants').addEventListener('click', e => {
+  $('#variants').addEventListener('change', e => { if (['stock_quantity', 'image_url'].includes(e.target.dataset.k)) renderRows(); });
+  $('#variants').addEventListener('click', async e => {
+    // อัปโหลด/แก้ไขรูปของสีในแถวนี้ แล้วใส่รูปเดียวกันให้ทุกไซซ์ของสีนั้น
+    const up = e.target.closest('[data-upload], [data-edit]');
+    if (up) {
+      const r = rows[Number(up.closest('[data-i]').dataset.i)];
+      const url = await KS.imageEditor.open(up.hasAttribute('data-edit') ? r.image_url : null, { title: `สี ${r.color_name || 'ไม่มีชื่อ'}`, ratio: '1:1' });
+      if (!url) return;
+      const name = r.color_name.trim().toLowerCase();
+      const same = name ? rows.filter(x => x.color_name.trim().toLowerCase() === name) : [r];
+      for (const x of same) x.image_url = url;
+      renderRows();
+      KS.toast(`ใส่รูปให้สี ${r.color_name || ''} แล้ว ${same.length} แถว กด "บันทึกสินค้า" เพื่อยืนยัน`, 'success');
+      return;
+    }
     if (!e.target.closest('[data-remove]')) return;
     rows.splice(Number(e.target.closest('[data-i]').dataset.i), 1);
     renderRows();
@@ -57,7 +75,30 @@
     renderRows();
   });
 
+  // ---- รูปภาพหลัก: อัปโหลด / ลากไฟล์มาวาง / แก้ไขรูปเดิม ----
+  function setMainImage(url) {
+    form.image_url.value = url;
+    $('#preview').src = url || '/img/hat-fallback.svg';
+  }
+  async function editMain(source) {
+    const url = await KS.imageEditor.open(source, { title: 'รูปภาพหลัก', ratio: '1:1' });
+    if (url) { setMainImage(url); KS.toast('เปลี่ยนรูปหลักแล้ว กด "บันทึกสินค้า" เพื่อยืนยัน', 'success'); }
+  }
   form.image_url.addEventListener('input', () => { $('#preview').src = form.image_url.value || '/img/hat-fallback.svg'; });
+  $('#img-upload').addEventListener('click', () => editMain(null));
+  $('#drop').addEventListener('click', () => editMain(null));
+  $('#img-edit').addEventListener('click', () => editMain(form.image_url.value.trim() || null));
+  // ลากไฟล์รูปจากเครื่องมาวางบนกล่องรูป
+  const drop = $('#drop');
+  drop.addEventListener('dragover', e => { if ([...e.dataTransfer.types].includes('Files')) { e.preventDefault(); $('#drop-hint').hidden = false; } });
+  drop.addEventListener('dragleave', e => { if (!drop.contains(e.relatedTarget)) $('#drop-hint').hidden = true; });
+  drop.addEventListener('drop', e => {
+    e.preventDefault();
+    $('#drop-hint').hidden = true;
+    const file = [...e.dataTransfer.files].find(f => f.type.startsWith('image/'));
+    if (file) editMain(file);
+    else KS.toast('กรุณาลากไฟล์รูปภาพ (JPG, PNG, WebP)', 'error');
+  });
 
   // โหลดข้อมูลเดิม (โหมดแก้ไข)
   if (id) {
@@ -80,7 +121,7 @@
     e.preventDefault();
     const btn = $('#save');
     KS.formError($('#form-error'), '');
-    if (!form.name.value.trim() || !form.base_price.value || !form.image_url.value.trim()) return KS.formError($('#form-error'), 'กรุณากรอกชื่อ ราคา และ URL รูปภาพหลัก');
+    if (!form.name.value.trim() || !form.base_price.value || !form.image_url.value.trim()) return KS.formError($('#form-error'), 'กรุณากรอกชื่อ ราคา และใส่รูปภาพหลัก');
     KS.busy(btn, true, 'กำลังบันทึก...');
     const body = {
       name: form.name.value.trim(), slug: form.slug.value.trim(), category_id: Number(form.category_id.value), base_price: Number(form.base_price.value),

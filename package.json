@@ -11,6 +11,8 @@
     "db:reset:local": "npm run db:init:local && npm run db:seed:local",
     "db:init:remote": "wrangler d1 execute ksante-db --remote --file=./schema.sql",
     "db:seed:remote": "wrangler d1 execute ksante-db --remote --file=./seed.sql",
+    "db:migrate:images:local": "wrangler d1 execute ksante-db --local --file=./migrations/0002_images.sql",
+    "db:migrate:images:remote": "wrangler d1 execute ksante-db --remote --file=./migrations/0002_images.sql",
     "test:api": "node tests/api-smoke.mjs http://127.0.0.1:8788",
     "deploy": "wrangler pages deploy"
   },

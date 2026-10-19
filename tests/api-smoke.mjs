@@ -152,6 +152,43 @@ check('delete product', r.status === 200);
 r = await admin('DELETE', '/api/admin/categories/1');
 check('category with products protected', r.status === 409);
 
+console.log('Image upload');
+// PNG ขนาด 1x1 พิกเซล สำหรับทดสอบ
+const PNG = Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4z8AAAAMBAQDJ/pLvAAAAAElFTkSuQmCC'), c => c.charCodeAt(0));
+const adminJar = (await admin('GET', '/api/admin/me')).jar;
+const upload = (bytes, type, who = adminJar) => fetch(BASE + '/api/admin/images', {
+  method: 'POST', body: bytes,
+  headers: { 'Content-Type': type, Cookie: [...who].map(([k, v]) => `${k}=${v}`).join('; ') },
+}).then(async res => ({ status: res.status, data: await res.json() }));
+r = await upload(PNG, 'image/png', new Map());
+check('guest cannot upload image', r.status === 401);
+r = await upload(PNG, 'image/png', (await cust('GET', '/api/auth/me')).jar);
+check('customer cannot upload image', r.status === 401 || r.status === 403, r.status);
+r = await upload(new TextEncoder().encode('<script>alert(1)</script>'), 'image/png');
+check('non-image bytes rejected', r.status === 422);
+r = await upload(PNG, 'text/html');
+check('wrong content type rejected', r.status === 415);
+r = await upload(new Uint8Array(1_600_000).fill(0xFF), 'image/jpeg');
+check('file over 1.5MB rejected', r.status === 413);
+r = await upload(PNG, 'image/png');
+check('admin uploads image', r.status === 201 && /^\/api\/images\/\d+$/.test(r.data.url), JSON.stringify(r.data));
+const imgUrl = r.data.url;
+let res = await fetch(BASE + imgUrl);
+const got = new Uint8Array(await res.arrayBuffer());
+check('image served back unchanged', res.status === 200 && res.headers.get('content-type') === 'image/png'
+  && got.length === PNG.length && got.every((b, i) => b === PNG[i]));
+check('image cached immutable', /immutable/.test(res.headers.get('cache-control') || ''));
+r = await guest('GET', '/api/images/999999');
+check('unknown image 404', r.status === 404);
+r = await admin('GET', `/api/admin/products/${cap.id}`);
+const editBody = { ...r.data.product, category_id: r.data.product.category.id, base_price: r.data.product.price, image_url: imgUrl,
+  variants: r.data.product.variants.map(v => ({ ...v, stock_quantity: v.stock, image_url: v.color_name === 'Cobalt' ? imgUrl : v.image_url })) };
+r = await admin('PUT', `/api/admin/products/${cap.id}`, editBody);
+check('product saved with uploaded image', r.status === 200 && r.data.product.image_url === imgUrl
+  && r.data.product.variants.filter(v => v.color_name === 'Cobalt').every(v => v.image_url === imgUrl), JSON.stringify(r.data).slice(0, 200));
+r = await admin('PUT', `/api/admin/products/${cap.id}`, { ...editBody, image_url: 'javascript:alert(1)' });
+check('bad image link rejected', r.status === 422);
+
 console.log('Consent & analytics');
 const vid = 'a'.repeat(32);
 r = await guest('POST', '/api/events', { visitor_id: vid, path: '/' });

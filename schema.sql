@@ -10,6 +10,7 @@
 DROP TRIGGER IF EXISTS trg_variant_insert_sync;
 DROP TRIGGER IF EXISTS trg_variant_update_sync;
 DROP TRIGGER IF EXISTS trg_variant_delete_sync;
+DROP TABLE IF EXISTS images;
 DROP TABLE IF EXISTS analytics_events;
 DROP TABLE IF EXISTS cookie_consents;
 DROP TABLE IF EXISTS order_status_history;
@@ -192,4 +193,20 @@ CREATE TABLE analytics_events (
   event        TEXT NOT NULL,
   path         TEXT NOT NULL,
   created_at   TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- ---------------------------------------------------------------------------
+-- images : รูปสินค้าที่แอดมินอัปโหลดจากหน้าเว็บ (เก็บไฟล์เป็น BLOB ใน D1 เลย ไม่ต้องใช้ R2)
+-- หน้าเว็บย่อรูปให้ด้านยาวไม่เกิน 1200px และบีบเป็น WebP/JPEG ก่อนส่ง จึงมีขนาดไม่เกิน 1.5MB
+-- เรียกดูรูปผ่าน URL  /api/images/<id>  (เก็บ URL นี้ไว้ใน products.image_url / product_variants.image_url)
+-- ---------------------------------------------------------------------------
+CREATE TABLE images (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  mime         TEXT    NOT NULL CHECK (mime IN ('image/webp', 'image/jpeg', 'image/png')),
+  data         BLOB    NOT NULL,
+  size_bytes   INTEGER NOT NULL,
+  width        INTEGER,
+  height       INTEGER,
+  uploaded_by  INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  created_at   TEXT    NOT NULL DEFAULT (datetime('now'))
 );

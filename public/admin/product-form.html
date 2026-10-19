@@ -25,7 +25,7 @@
     </header>
     <main id="main" class="flex-1 p-4 sm:p-8">
 
-      <form id="product-form" class="grid xl:grid-cols-[minmax(0,1fr)_340px] gap-4 items-start" novalidate>
+      <form id="product-form" class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_340px] gap-4 items-start" novalidate>
         <div class="space-y-4">
           <section class="card p-5 grid sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2"><label class="label" for="name">ชื่อสินค้า *</label><input class="input" id="name" name="name" required maxlength="120"></div>
@@ -39,16 +39,28 @@
             <div class="flex flex-wrap items-center justify-between gap-2"><h2 class="font-bold">ตัวเลือกสี × ขนาด และสต็อก</h2>
               <div class="flex gap-2"><button type="button" id="add-variant" class="btn btn-outline btn-sm"><span data-icon="plus" data-cls="w-4 h-4"></span> เพิ่มแถว</button>
               <button type="button" id="gen-variants" class="btn btn-ghost btn-sm border border-line"><span data-icon="sparkles" data-cls="w-4 h-4"></span> สร้างสีใหม่ครบ 4 ไซซ์</button></div></div>
-            <div class="overflow-x-auto mt-3"><table class="w-full text-sm min-w-[760px]">
-              <thead class="text-left text-xs text-ink-soft"><tr><th class="p-2">สี</th><th class="p-2">Hex</th><th class="p-2">ไซซ์</th><th class="p-2">SKU (เว้นว่าง = อัตโนมัติ)</th><th class="p-2">สต็อก</th><th class="p-2">URL รูปของสีนี้</th><th class="p-2"></th></tr></thead>
+            <div class="overflow-x-auto mt-3"><table class="w-full text-sm min-w-[860px]">
+              <thead class="text-left text-xs text-ink-soft"><tr><th class="p-2">สี</th><th class="p-2">Hex</th><th class="p-2">ไซซ์</th><th class="p-2">SKU (เว้นว่าง = อัตโนมัติ)</th><th class="p-2">สต็อก</th><th class="p-2">รูปของสีนี้ (เว้นว่าง = ใช้รูปหลัก)</th><th class="p-2"></th></tr></thead>
               <tbody id="variants"></tbody></table></div>
             <p class="text-xs text-ink-soft mt-2">แถวที่ลบออกแล้วกดบันทึก จะถูกลบจากฐานข้อมูล (ประวัติออเดอร์เดิมยังอยู่ครบ)</p>
           </section>
         </div>
         <aside class="space-y-4 xl:sticky xl:top-24">
           <section class="card p-5">
-            <label class="label" for="image_url">URL รูปภาพหลัก *</label><input class="input" id="image_url" name="image_url" required placeholder="https://images.unsplash.com/...">
-            <div class="mt-3 aspect-square rounded-xl overflow-hidden bg-mist border border-line"><img id="preview" class="w-full h-full object-cover" alt="ตัวอย่างรูปสินค้า" src="/img/hat-fallback.svg" onerror="this.src='/img/hat-fallback.svg'"></div>
+            <p class="label">รูปภาพหลัก *</p>
+            <!-- กล่องรูป: คลิกเพื่ออัปโหลด หรือลากไฟล์รูปมาวางได้ -->
+            <button type="button" id="drop" class="relative block w-full aspect-square rounded-xl overflow-hidden bg-mist border-2 border-dashed border-line hover:border-cobalt transition-colors group" aria-label="อัปโหลดรูปภาพหลัก (คลิก หรือ ลากไฟล์มาวาง)">
+              <img id="preview" class="w-full h-full object-cover" alt="ตัวอย่างรูปสินค้า" src="/img/hat-fallback.svg" onerror="this.src='/img/hat-fallback.svg'">
+              <span class="absolute inset-x-3 bottom-3 rounded-full bg-white/95 text-xs font-bold py-2 flex items-center justify-center gap-1.5 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity"><span data-icon="upload" data-cls="w-4 h-4"></span> คลิกหรือลากรูปมาวาง</span>
+              <span id="drop-hint" class="absolute inset-0 bg-cobalt/15 text-cobalt font-bold flex items-center justify-center gap-2" hidden><span data-icon="image-plus" data-cls="w-5 h-5"></span> ปล่อยไฟล์เพื่ออัปโหลด</span>
+            </button>
+            <div class="grid grid-cols-2 gap-2 mt-3">
+              <button type="button" id="img-upload" class="btn btn-primary btn-sm"><span data-icon="upload" data-cls="w-4 h-4"></span> อัปโหลดรูป</button>
+              <button type="button" id="img-edit" class="btn btn-outline btn-sm"><span data-icon="crop" data-cls="w-4 h-4"></span> แก้ไขรูปนี้</button>
+            </div>
+            <p class="text-[11px] text-ink-soft mt-2">รองรับ JPG, PNG, WebP • ครอป หมุน ซูมได้ก่อนบันทึก • ระบบย่อรูปให้อัตโนมัติ</p>
+            <label class="label mt-4 flex items-center gap-1.5" for="image_url"><span data-icon="link" data-cls="w-3.5 h-3.5"></span> หรือใช้ลิงก์รูป</label>
+            <input class="input" id="image_url" name="image_url" required placeholder="https://... (อัปโหลดแล้วจะเติมให้เอง)">
             <label class="flex items-center justify-between gap-3 mt-4 text-sm font-bold cursor-pointer">เปิดขายบนหน้าร้าน<span class="switch"><input type="checkbox" name="is_active" checked><span></span></span></label>
           </section>
           <section class="card p-5 space-y-3">
@@ -66,6 +78,7 @@
   <script src="/js/icons.js" defer></script>
   <script src="/js/app.js" defer></script>
   <script src="/js/admin/admin.js" defer></script>
+  <script src="/js/admin/image-editor.js" defer></script>
   <script src="/js/admin/product-form.js" defer></script>
 </body>
 </html>

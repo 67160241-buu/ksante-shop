@@ -34,7 +34,7 @@ users ─────────────┐ 1
   │                 │ 1                                      (สี x ไซซ์ + สต็อก)
   │                 └──n── order_status_history (Timeline)
   │
-  └─(user:<id>)── cookie_consents        order_counters (เลขรันรายวัน)     analytics_events
+  └─(user:<id>)── cookie_consents        order_counters (เลขรันรายวัน)     analytics_events     images (รูปที่อัปโหลด)
 ```
 
 | ตาราง | หน้าที่ | คอลัมน์สำคัญ |
@@ -49,6 +49,7 @@ users ─────────────┐ 1
 | `order_counters` | ตัวนับเลขออเดอร์ต่อวัน | day_key (YYYYMMDD ตามเวลาไทย), last_seq |
 | `cookie_consents` | หลักฐานความยินยอม PDPA | user_identifier, consent_data (JSON), ip_address, created_at |
 | `analytics_events` | สถิติการเข้าชม | บันทึก **เฉพาะ** เมื่อผู้ใช้ยอมรับคุกกี้ Analytics |
+| `images` | รูปสินค้าที่แอดมินอัปโหลด | mime, data (BLOB), size_bytes, width, height, uploaded_by เปิดดูได้ที่ `/api/images/<id>` |
 
 จุดที่ควรอธิบายตอนพรีเซนต์:
 
@@ -58,6 +59,10 @@ users ─────────────┐ 1
 2. **เลขคำสั่งซื้อ:** `order_counters` เพิ่มเลขด้วย UPSERT ใน batch เดียวกัน ได้ `KS202610190001`, `KS202610190002`, ...
 3. **Trigger:** แก้สต็อก variant เมื่อไร `products.stock_quantity` จะคำนวณผลรวมใหม่ให้เอง
 4. **ราคาในออเดอร์:** `order_items` เก็บชื่อและราคา ณ วันที่สั่ง ถึงสินค้าจะถูกแก้หรือลบภายหลังก็ไม่กระทบประวัติ
+5. **อัปโหลดและแก้ไขรูปบนหน้าเว็บ:** หน้าฟอร์มสินค้ามีตัวแก้ไขรูป (`public/js/admin/image-editor.js`) ใช้ `<canvas>`
+   ครอป หมุน กลับด้าน ซูม แล้วย่อเหลือด้านยาวไม่เกิน 1200px และบีบอัดเป็น WebP ในเบราว์เซอร์ก่อนส่ง
+   เซิร์ฟเวอร์ตรวจไบต์แรกของไฟล์ว่าเป็นรูปจริง แล้วเก็บเป็น BLOB ใน D1 (ไม่ต้องใช้ R2 / ไม่ต้องผูกบัตร)
+   แก้รูปแต่ละครั้งได้ id ใหม่ จึงตั้ง cache แบบ immutable ได้ รูปที่อัปแล้วไม่ได้ใช้เกิน 1 วันจะถูกลบอัตโนมัติ
 
 สถานะคำสั่งซื้อ: `Pending → Confirmed → Packing → Shipped → Completed` และ `Cancelled`
 (เดินหน้าอย่างเดียว, Shipped ต้องมีเลขพัสดุ, ยกเลิกได้ก่อนส่งของและระบบคืนสต็อกให้อัตโนมัติ)
@@ -93,7 +98,7 @@ ksante-shop/
 │       ├── promptpay.js          สร้าง QR PromptPay (EMVCo + CRC16)
 │       ├── vendor/qrcode.js      ไลบรารีวาด QR (MIT)
 │       ├── pages/                สคริปต์ของแต่ละหน้าร้าน
-│       └── admin/                สคริปต์ของแต่ละหน้าแอดมิน
+│       └── admin/                สคริปต์ของแต่ละหน้าแอดมิน (image-editor.js = ตัวแก้ไขรูป)
 ├── functions/                    ← Cloudflare Pages Functions (API บน Edge)
 │   ├── _middleware.js            ทุกคำขอ: กัน cross-origin POST, แปลง error เป็น JSON, security headers
 │   ├── _lib/                     โค้ดที่ใช้ร่วมกัน (ไม่ถูกเปิดเป็น URL)
@@ -106,11 +111,12 @@ ksante-shop/
 │       ├── auth/  products/  orders/  cart/  categories.js  consent.js  events.js
 │       └── admin/                (มี _middleware.js ตรวจสิทธิ์แอดมินทุกเส้น)
 ├── schema.sql                    โครงสร้างตาราง D1
+├── migrations/0002_images.sql    เพิ่มตาราง images ให้ฐานข้อมูลที่ใช้งานอยู่แล้ว (ไม่ลบข้อมูลเดิม)
 ├── seed.sql                      ข้อมูลเริ่มต้น: 12 สินค้า, 128 ตัวเลือก, 8 ออเดอร์ตัวอย่าง, แอดมิน
 ├── wrangler.toml                 ตั้งค่า Pages + D1 binding
 ├── package.json                  คำสั่งลัด npm run ...
 ├── .dev.vars.example             ตัวอย่างค่าลับสำหรับรันในเครื่อง
-├── tests/api-smoke.mjs           ทดสอบ API 51 ข้อ
+├── tests/api-smoke.mjs           ทดสอบ API 62 ข้อ
 └── tools/
     ├── gen_seed.py               สคริปต์ที่ใช้สร้าง seed.sql
     └── set-admin-password.mjs    เปลี่ยนรหัสผ่านแอดมิน
@@ -186,6 +192,8 @@ ksante-shop/
 | GET | `/api/admin/me` · `/api/admin/metrics` | แอดมิน | ข้อมูลแอดมิน / ตัวเลข Dashboard |
 | GET POST / PUT DELETE | `/api/admin/categories` · `/:id` | แอดมิน | CRUD หมวดหมู่ |
 | GET POST / GET PUT DELETE | `/api/admin/products` · `/:id` | แอดมิน | CRUD สินค้า + ตัวเลือก |
+| POST | `/api/admin/images` | แอดมิน | อัปโหลดรูป (body = ไฟล์ WebP/JPEG/PNG ไม่เกิน 1.5MB) ได้ `{ url: "/api/images/<id>" }` |
+| GET | `/api/images/:id` | ทุกคน | เปิดดูรูปที่อัปโหลด (cache 1 ปี) |
 | GET / PATCH | `/api/admin/inventory` | แอดมิน | ดู/แก้สต็อกหลายรายการ |
 | PATCH | `/api/admin/variants/:id` | แอดมิน | ตั้งหรือปรับสต็อกตัวเลือกเดียว |
 | GET | `/api/admin/orders?status=&q=&page=` | แอดมิน | รายการคำสั่งซื้อ |
@@ -200,5 +208,5 @@ npm install
 cp .dev.vars.example .dev.vars        # แล้วแก้ JWT_SECRET เป็นค่าสุ่มยาว 32 ตัวขึ้นไป
 npm run db:reset:local                 # สร้างตาราง + ใส่ข้อมูลตัวอย่างใน D1 จำลอง
 npm run dev                            # เปิด http://127.0.0.1:8788
-npm run test:api                       # (อีกหน้าต่าง) ทดสอบ API 51 ข้อ แล้วรัน db:reset:local ใหม่
+npm run test:api                       # (อีกหน้าต่าง) ทดสอบ API 62 ข้อ แล้วรัน db:reset:local ใหม่
 ```

@@ -6,7 +6,8 @@ import { slugify } from './catalog.js';
 
 const CAT_CODE = { caps: 'CAP', 'bucket-hats': 'BKT', beanies: 'BNE', berets: 'BRT' };
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
-const URL_RE = /^https:\/\/[^\s"'<>]+$/;
+// รับได้ 2 แบบ: ลิงก์ https:// ภายนอก หรือรูปที่อัปโหลดไว้ในระบบ (/api/images/<id>)
+const URL_RE = /^(https:\/\/[^\s"'<>]+|\/api\/images\/\d+)$/;
 
 /** ตรวจและทำความสะอาดข้อมูลสินค้า + variant ที่ส่งมาจากฟอร์ม */
 export async function cleanProduct(db, body) {
@@ -16,7 +17,7 @@ export async function cleanProduct(db, body) {
   const name = text(body.name, 'ชื่อสินค้า', { max: 120 });
   const slug = slugify(text(body.slug, 'slug', { required: false, max: 120 }) || name);
   const image_url = text(body.image_url, 'URL รูปภาพหลัก', { max: 500 });
-  if (!URL_RE.test(image_url)) throw new HttpError(422, 'URL รูปภาพต้องขึ้นต้นด้วย https://');
+  if (!URL_RE.test(image_url)) throw new HttpError(422, 'รูปภาพต้องเป็นลิงก์ https:// หรือรูปที่อัปโหลดในระบบ');
 
   if (!Array.isArray(body.variants) || !body.variants.length) throw new HttpError(422, 'ต้องมีตัวเลือกสี/ขนาดอย่างน้อย 1 รายการ');
   if (body.variants.length > 80) throw new HttpError(422, 'ตัวเลือกสี/ขนาดมากเกินไป (สูงสุด 80)');
@@ -31,7 +32,7 @@ export async function cleanProduct(db, body) {
     if (seen.has(key)) throw new HttpError(422, `${n}สี ${color_name} ขนาด ${size} ซ้ำกับแถวอื่น`);
     seen.add(key);
     const image = text(v.image_url, `${n}URL รูป`, { required: false, max: 500 });
-    if (image && !URL_RE.test(image)) throw new HttpError(422, `${n}URL รูปต้องขึ้นต้นด้วย https://`);
+    if (image && !URL_RE.test(image)) throw new HttpError(422, `${n}รูปต้องเป็นลิงก์ https:// หรือรูปที่อัปโหลดในระบบ`);
     const autoSku = `${CAT_CODE[cat.slug] || 'HAT'}-${slug.slice(0, 12).toUpperCase()}-${color_name.slice(0, 3).toUpperCase()}-${size}`;
     return {
       id: v.id ? int(v.id, `${n}id`, { min: 1, max: 1e9 }) : null,

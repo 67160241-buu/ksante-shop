@@ -64,7 +64,7 @@ npm run dev               # เปิดเว็บที่ http://127.0.0.1:8
 
 - หน้าร้าน: http://127.0.0.1:8788
 - หน้าแอดมิน: http://127.0.0.1:8788/admin/login (admin@ksante.com / Admin@1234)
-- ทดสอบ API อัตโนมัติ (เปิดอีกหน้าต่างขณะ `npm run dev` ทำงาน): `npm run test:api` ควรได้ `51 passed, 0 failed`
+- ทดสอบ API อัตโนมัติ (เปิดอีกหน้าต่างขณะ `npm run dev` ทำงาน): `npm run test:api` ควรได้ `62 passed, 0 failed`
   (สคริปต์นี้สร้างออเดอร์จริงในฐานข้อมูล ทดสอบเสร็จให้รัน `npm run db:reset:local` อีกครั้ง)
 
 ## ขั้นที่ 4 : สร้างและเชื่อม Cloudflare D1 Database
@@ -109,6 +109,18 @@ npx wrangler d1 execute ksante-db --remote --command "SELECT COUNT(*) AS product
 >
 > ดูข้อมูลผ่านหน้าเว็บได้ที่ Dashboard → **Storage & Databases → D1 SQL Database → ksante-db → Console**
 
+### 5.1 อัปเดตฐานข้อมูลเดิมให้รองรับการอัปโหลดรูป (ทำครั้งเดียว)
+
+ถ้าเคยรัน `schema.sql` บน D1 จริงไปแล้ว **ก่อนมีฟีเจอร์อัปโหลดรูป** ให้รันไฟล์นี้เพิ่ม (ไม่ลบข้อมูลเดิม รันซ้ำได้):
+
+```bash
+npm run db:migrate:images:remote   # = npx wrangler d1 execute ksante-db --remote --file=./migrations/0002_images.sql
+npm run db:migrate:images:local    # ฐานข้อมูลจำลองในเครื่อง (หรือใช้ npm run db:reset:local)
+```
+
+ถ้ายังไม่ได้รันเลย ไม่ต้องทำขั้นนี้ เพราะ `schema.sql` มีตาราง `images` อยู่แล้ว
+อาการถ้าลืม: กดบันทึกรูปในหน้าแอดมินแล้วขึ้น "เกิดข้อผิดพลาดในระบบ" (log จะเห็น `no such table: images`)
+
 ## ขั้นที่ 6 : Deploy
 
 เลือก **วิธีใดวิธีหนึ่ง**
@@ -146,6 +158,10 @@ npm run deploy            # = npx wrangler pages deploy
 2. เข้า https://dash.cloudflare.com → **Workers & Pages** → **Create application**
 3. เลือกแท็บ **Pages** → **Import an existing Git repository** (หรือ Connect to Git)
    (ถ้าหน้าจอแสดงแต่ Workers ให้มองหาลิงก์ "Looking to deploy Pages? Get started")
+   > **ระวัง:** ถ้ากด Import a repository ของฝั่ง **Workers** จะได้โปรเจกต์ Worker ที่รัน `npx wrangler deploy`
+   > และ build ล้มด้วยข้อความ "Specify an entry-point ... main = \"src/index.ts\"" หรือ "[assets] directory"
+   > วิธีแก้: ลบ Worker นั้น (Settings → Delete) แล้วสร้างใหม่ผ่านลิงก์ Pages ข้างบน
+   > โปรเจกต์ที่ถูกต้องจะได้ URL ลงท้าย `.pages.dev` ไม่ใช่ `.workers.dev`
 4. เชื่อมบัญชี GitHub แล้วเลือก repository `ksante-shop` → **Begin setup**
 5. ตั้งค่า Build:
    | ช่อง | ค่า |
@@ -203,6 +219,24 @@ Name = `JWT_SECRET`, Value = ค่าที่สุ่มได้ → **Save*
 > ถ้าจะใช้แค่ subdomain (เช่น `shop.example.com`) และไม่ย้าย nameserver ก็ทำได้: เพิ่มโดเมนในขั้น 8.2 ก่อน
 > แล้วไปสร้าง CNAME `shop` → `ksante-shop.pages.dev` ที่ผู้ให้บริการ DNS เดิม
 > แต่ **โดเมนหลัก (apex เช่น `ksante.shop`) ต้องย้าย nameserver มา Cloudflare เท่านั้น**
+
+### 8.1.1 กรณีซื้อโดเมนจาก GoDaddy
+
+**แบบแนะนำ: ย้าย Nameserver มา Cloudflare** (ใช้ได้ทั้งโดเมนหลักและ www)
+
+1. ทำข้อ 8.1 ข้อ 1-2 ใน Cloudflare ก่อน ตรวจว่ามี record **MX** ครบ ถ้าใช้อีเมลของ GoDaddy อยู่ จด Nameserver 2 ตัวที่ได้
+2. ล็อกอิน GoDaddy → **My Products** → **Domains** → กดชื่อโดเมน → แท็บ **DNS**
+3. ถ้าเปิด **DNSSEC** อยู่ ให้ปิดก่อน (ถ้าเปิดค้างไว้ โดเมนจะใช้ไม่ได้หลังย้าย)
+4. **Nameservers** → **Change Nameservers** → **I'll use my own nameservers**
+5. ลบค่าเดิม (`nsXX.domaincontrol.com`) แล้วใส่ Nameserver 2 ตัวจาก Cloudflare → **Save** → ยืนยัน
+6. กลับไป Cloudflare กด **Check nameservers now** รอจนสถานะ **Active** แล้วทำข้อ 8.2 และ 8.3 ต่อ
+
+**แบบไม่ย้าย Nameserver** (ใช้ได้แค่ subdomain เช่น `www`)
+
+1. ทำข้อ 8.2 ใส่ `www.ksante.shop` ก่อน
+2. ที่ GoDaddy → DNS → **Add New Record**: Type `CNAME`, Name `www`, Value `ksante-shop.pages.dev`, TTL ค่าเริ่มต้น → Save
+3. ตั้งให้โดเมนหลักพาไปที่ www: GoDaddy → DNS → **Forwarding** → Domain → ใส่ `https://www.ksante.shop` (Permanent 301)
+4. ข้อ 8.3 ตั้งไม่ได้ในแบบนี้ (ไม่มีโดเมนใน Cloudflare) แต่ Pages ออก SSL ให้ `www` อัตโนมัติ
 
 ### 8.2 ผูกโดเมนกับโปรเจกต์ Pages
 
@@ -291,11 +325,14 @@ npx wrangler d1 execute ksante-db --remote --command "DELETE FROM orders; DELETE
 | ล็อกอินแล้วขึ้น "ระบบยังไม่ได้ตั้งค่า JWT_SECRET" | ยังไม่ได้ทำขั้นที่ 7 หรือตั้งแล้วแต่ยังไม่ deploy ใหม่ |
 | API ตอบ `no such table: products` | ยังไม่ได้รัน `npm run db:init:remote` และ `db:seed:remote` (ขั้นที่ 5) หรือลืมใส่ `--remote` |
 | API ตอบ error เกี่ยวกับ `DB` / `undefined` | ไม่มี D1 binding ตรวจ `wrangler.toml` และ Settings → Bindings (ขั้นที่ 4 / 6B ข้อ 7) |
+| Build ล้มที่ขั้น Deploying: "Specify an entry-point" / "[assets] directory" | สร้างโปรเจกต์เป็น Worker แทน Pages ให้ลบแล้วสร้างใหม่ตามขั้น 6B ข้อ 3 |
 | หน้าเว็บขึ้นแต่ API 404 ทั้งหมด | deploy ด้วยการลากไฟล์ขึ้น Dashboard ให้ใช้วิธี A หรือ B แทน |
 | ล็อกอินสำเร็จแต่รีเฟรชแล้วหลุด | เปิดเว็บผ่าน `http://` cookie แบบ Secure ใช้ไม่ได้ เปิด Always Use HTTPS (ขั้น 8.3) |
 | เรียก API จากเว็บอื่นได้ 403 | ตั้งใจไว้: ระบบกันคำขอแบบ POST/PUT/DELETE ที่มาจากโดเมนอื่น (ป้องกัน CSRF) |
 | Custom domain ค้างที่ Pending / Verifying | ตรวจว่าโดเมนเป็น Active ใน Cloudflare แล้ว และไม่มี DNS record ชื่อซ้ำ รอ DNS อัปเดต |
-| รูปสินค้าไม่ขึ้น | รูปมาจาก images.unsplash.com ถ้าเครือข่ายบล็อก ระบบจะแสดงรูปหมวกสำรองแทน เปลี่ยน URL รูปได้ในหน้าแอดมิน → สินค้า |
+| อัปโหลดรูปแล้วขึ้น "เกิดข้อผิดพลาดในระบบ" | ยังไม่มีตาราง `images` บน D1 จริง ให้รันขั้น 5.1 |
+| แก้ไขรูปจากลิงก์ภายนอกไม่ได้ | เว็บต้นทางไม่อนุญาตให้นำรูปไปแก้ (CORS) ให้บันทึกรูปลงเครื่องแล้วกด "เลือกรูปอื่น" ในหน้าต่างแก้ไขรูป |
+| รูปสินค้าไม่ขึ้น | รูปมาจาก images.unsplash.com ถ้าเครือข่ายบล็อก ระบบจะแสดงรูปหมวกสำรองแทน เปลี่ยนรูปได้ในหน้าแอดมิน → สินค้า (อัปโหลดรูปจากเครื่องได้เลย) |
 
 ดู log ของ Functions แบบสด: `npx wrangler pages deployment tail --project-name ksante-shop`
 
@@ -306,5 +343,6 @@ npx wrangler d1 execute ksante-db --remote --command "DELETE FROM orders; DELETE
 | `npm run dev` | รันเว็บในเครื่องที่ http://127.0.0.1:8788 |
 | `npm run db:reset:local` | ล้างและสร้างฐานข้อมูลจำลองในเครื่องใหม่ |
 | `npm run db:init:remote` / `db:seed:remote` | สร้างตาราง / ใส่ข้อมูลตัวอย่าง บน D1 จริง |
-| `npm run test:api` | ทดสอบ API 51 ข้อ (ขณะรัน `npm run dev`) |
+| `npm run db:migrate:images:remote` | เพิ่มตารางรูปภาพให้ D1 จริงที่ใช้อยู่แล้ว (ขั้น 5.1) |
+| `npm run test:api` | ทดสอบ API 62 ข้อ (ขณะรัน `npm run dev`) |
 | `npm run deploy` | deploy ขึ้น Cloudflare Pages |
