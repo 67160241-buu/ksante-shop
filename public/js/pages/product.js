@@ -29,7 +29,8 @@
   document.querySelector('meta[name="description"]')?.setAttribute('content', p.description.slice(0, 150));
 
   // เลือกสีแรกที่ยังมีของเป็นค่าเริ่มต้น
-  let color = (p.colors.find(c => c.stock > 0) || p.colors[0]).name;
+  // สีเริ่มต้น: สีที่เลือกมาจากการ์ดสินค้า (?color=) ถ้ายังมีของ ไม่งั้นสีแรกที่มีของ
+  let color = (p.colors.find(c => c.name === KS.param('color') && c.stock > 0) || p.colors.find(c => c.stock > 0) || p.colors[0]).name;
   let size = null;
   let qty = 1;
   const variant = () => p.variants.find(v => v.color_name === color && v.size === size);
@@ -40,9 +41,9 @@
       <a href="/shop?category=${encodeURIComponent(p.category.slug)}" class="hover:text-ink">${esc(p.category.name)}</a> / <span class="text-ink font-bold">${esc(p.name)}</span></nav>
     <div class="grid lg:grid-cols-2 gap-10 mt-4">
       <div>
-        <div class="relative aspect-square rounded-3xl overflow-hidden bg-mist border-2 border-ink">
+        <div id="main-wrap" class="relative aspect-square rounded-[2.25rem] overflow-hidden bg-mist">
           <div id="main-img" class="w-full h-full"></div>
-          <span id="img-color" class="absolute bottom-4 left-4 bg-white rounded-full px-3 py-1.5 text-xs font-bold flex items-center gap-2"></span>
+          <span id="img-color" class="pill absolute top-4 left-4 bg-white/95"></span>
         </div>
         <div id="thumbs" class="grid grid-cols-4 gap-3 mt-3"></div>
       </div>
@@ -96,10 +97,11 @@
 
   function render() {
     const c = p.colors.find(x => x.name === color);
-    $('#main-img').innerHTML = img(c.image_url, `${p.name} สี ${c.name}`, 'w-full h-full object-cover fade-in');
+    $('#main-img').innerHTML = img(c.image_url, `${p.name} สี ${c.name}`, 'w-full h-full object-cover fade-in', { cat: p.category.slug, hex: c.hex });
+    $('#main-wrap').style.background = KS.tint(c.hex);
     $('#img-color').innerHTML = `<span class="w-3 h-3 rounded-full" style="background:${esc(c.hex)}"></span>${esc(c.name)}`;
     $('#color-name').textContent = c.name;
-    $('#thumbs').innerHTML = p.colors.map(x => `<button type="button" class="aspect-square rounded-xl overflow-hidden bg-mist border-2 ${x.name === color ? 'border-ink' : 'border-transparent hover:border-line'}" data-color="${esc(x.name)}" aria-label="ดูรูปสี ${esc(x.name)}">${img(x.image_url, x.name, 'w-full h-full object-cover')}</button>`).join('');
+    $('#thumbs').innerHTML = p.colors.map(x => `<button type="button" class="press aspect-square rounded-2xl overflow-hidden border-2 ${x.name === color ? 'border-ink' : 'border-transparent hover:border-line'}" style="background:${KS.tint(x.hex)}" data-color="${esc(x.name)}" aria-label="ดูรูปสี ${esc(x.name)}">${img(x.image_url, x.name, 'w-full h-full object-cover', { cat: p.category.slug, hex: x.hex })}</button>`).join('');
     $('#swatches').innerHTML = p.colors.map(x => `<button type="button" class="swatch w-9 h-9 relative" style="background:${esc(x.hex)};width:36px;height:36px" data-color="${esc(x.name)}" aria-pressed="${x.name === color}" title="${esc(x.name)}" aria-label="สี ${esc(x.name)}${x.stock === 0 ? ' (หมด)' : ''}">
       ${x.stock === 0 ? '<span class="absolute inset-0 grid place-items-center"><span class="block w-full h-0.5 bg-danger rotate-45"></span></span>' : ''}</button>`).join('');
     $('#sizes').innerHTML = p.sizes.map(s => {

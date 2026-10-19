@@ -30,14 +30,14 @@
           <div id="login-hint" class="card p-4 text-sm flex items-center gap-3" hidden><span data-icon="user" class="text-cobalt"></span>
             <span>มีบัญชีอยู่แล้ว? <a href="/login?next=/checkout" class="link">เข้าสู่ระบบ</a> เพื่อกรอกที่อยู่อัตโนมัติและดูประวัติคำสั่งซื้อ</span></div>
 
-          <fieldset class="card p-6"><legend class="font-display font-bold text-lg px-1">1. ข้อมูลผู้รับ</legend>
+          <fieldset class="card p-6"><legend class="float-left w-full font-display font-bold text-lg mb-4">1. ข้อมูลผู้รับ</legend>
             <div class="grid sm:grid-cols-2 gap-4 mt-3">
               <div class="sm:col-span-2"><label class="label" for="customer_name">ชื่อ-นามสกุล *</label><input class="input" id="customer_name" name="customer_name" required maxlength="100" autocomplete="name"></div>
               <div><label class="label" for="phone">เบอร์โทรศัพท์ *</label><input class="input" id="phone" name="phone" required inputmode="tel" maxlength="12" placeholder="0812345678" autocomplete="tel"></div>
               <div><label class="label" for="customer_email">อีเมล *</label><input class="input" id="customer_email" name="customer_email" type="email" required maxlength="120" autocomplete="email"></div>
             </div></fieldset>
 
-          <fieldset class="card p-6"><legend class="font-display font-bold text-lg px-1">2. ที่อยู่จัดส่ง</legend>
+          <fieldset class="card p-6"><legend class="float-left w-full font-display font-bold text-lg mb-4">2. ที่อยู่จัดส่ง</legend>
             <div class="grid sm:grid-cols-2 gap-4 mt-3">
               <div class="sm:col-span-2"><label class="label" for="address_line">บ้านเลขที่ ถนน ซอย แขวง/ตำบล *</label><input class="input" id="address_line" name="address_line" required maxlength="300" autocomplete="street-address"></div>
               <div><label class="label" for="district">เขต/อำเภอ *</label><input class="input" id="district" name="district" required maxlength="100"></div>
@@ -48,7 +48,7 @@
             </div>
             <datalist id="provinces"></datalist></fieldset>
 
-          <fieldset class="card p-6"><legend class="font-display font-bold text-lg px-1">3. วิธีชำระเงิน</legend>
+          <fieldset class="card p-6"><legend class="float-left w-full font-display font-bold text-lg mb-4">3. วิธีชำระเงิน</legend>
             <div class="grid gap-3 mt-3" id="payments">
               <label class="flex items-start gap-3 p-4 rounded-2xl border-2 border-line cursor-pointer has-[:checked]:border-ink has-[:checked]:bg-mist transition">
                 <input type="radio" name="payment_method" value="promptpay" class="mt-1 accent-ink" checked>

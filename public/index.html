@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- หน้าแรก: Hero, หมวดหมู่, สินค้าใหม่ (New Drops), สินค้าแนะนำ -->
+<!-- หน้าแรก: Hero, แถบคำวิ่ง, สินค้ายอดนิยม, การ์ดหมวดหมู่, สิทธิพิเศษสมาชิก -->
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -22,72 +22,93 @@
 
   <main id="main" class="flex-1">
 
-    <!-- Hero แบบ Color-blocking -->
-    <section class="max-w-7xl mx-auto px-4 pt-8 sm:pt-12">
-      <div class="grid lg:grid-cols-12 gap-4">
-        <div class="lg:col-span-7 card-block p-8 sm:p-12 flex flex-col justify-between min-h-[420px] relative overflow-hidden">
-          <span class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-mustard-soft" aria-hidden="true"></span>
-          <div class="relative">
-            <p class="eyebrow text-tangerine">New Season · Drop 09</p>
-            <h1 class="font-display font-bold text-4xl sm:text-6xl leading-[1.05] mt-4 tracking-tight">หมวกสีสด<br>ที่ใส่ได้<span class="bg-cobalt text-white px-3 rounded-xl ml-2">ทุกวัน</span></h1>
-            <p class="text-ink-soft mt-5 max-w-md leading-relaxed">Caps, Bucket Hats, Beanies และ Berets ตัดเย็บด้วยผ้าคุณภาพ เลือกสีได้ตามสไตล์ มีไซซ์ตามรอบศีรษะ S ถึง XL</p>
-          </div>
-          <div class="relative flex flex-wrap gap-3 mt-8">
-            <a href="/shop" class="btn btn-primary h-12 px-6">ช้อปเลย <span data-icon="arrow-right"></span></a>
-            <a href="/shop?sort=newest" class="btn btn-outline h-12 px-6">ดูสินค้าใหม่</a>
-          </div>
+    <!-- Hero: หัวข้อใหญ่ + ตัวเลขเด่น (ซ้าย) / รูปสินค้าบนพื้นสี + การ์ดสินค้าเด่น (ขวา) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-8 lg:pt-14 grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      <div class="lg:col-span-6 animate-rise">
+        <span class="pill bg-tangerine-soft text-tangerine"><span class="w-2 h-2 rounded-full bg-tangerine pulse-dot"></span> New Season · Drop 09</span>
+        <h1 class="mt-5 font-display font-bold uppercase text-[44px] leading-[.95] sm:text-6xl lg:text-[76px] tracking-[-.04em]">
+          Wear your<br><span class="text-cobalt">own shade.</span><br>Headwear for every day.</h1>
+        <p class="mt-6 max-w-md text-base text-ink-soft leading-relaxed"><b class="text-ink">หมวกสีสด ใส่ได้ทุกวัน</b> Caps, Bucket Hats, Beanies และ Berets ตัดเย็บด้วยผ้าคุณภาพ ย้อมสีที่ไม่ซ้ำใคร มีไซซ์ตามรอบศีรษะ S ถึง XL</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/shop" class="btn btn-cobalt btn-lg">ช้อปคอลเลกชัน <span data-icon="arrow-right" data-cls="w-[18px] h-[18px]"></span></a>
+          <a href="/product-detail?slug=everyday-twill-cap#size-guide" class="btn btn-outline btn-lg"><span data-icon="ruler" data-cls="w-[18px] h-[18px]"></span> หาไซซ์ที่ใช่</a>
         </div>
-        <div class="lg:col-span-5 grid grid-cols-2 gap-4" id="hero-tiles">
-          <div class="rounded-2xl bg-cobalt aspect-square skeleton"></div><div class="rounded-2xl bg-tangerine aspect-square skeleton"></div>
-          <div class="rounded-2xl bg-sage aspect-square skeleton"></div><div class="rounded-2xl bg-mustard aspect-square skeleton"></div>
-        </div>
+        <dl id="hero-stats" class="mt-10 grid grid-cols-3 gap-3 max-w-md">
+          <div class="rounded-2xl bg-white border border-line p-3.5"><dt class="text-[10px] font-bold uppercase tracking-[.14em] text-ink-soft">ทรงหมวก</dt><dd class="mt-1 font-display font-bold text-xl">4</dd></div>
+          <div class="rounded-2xl bg-white border border-line p-3.5"><dt class="text-[10px] font-bold uppercase tracking-[.14em] text-ink-soft">สินค้า</dt><dd class="mt-1 font-display font-bold text-xl text-cobalt" data-stat="products">-</dd></div>
+          <div class="rounded-2xl bg-white border border-line p-3.5"><dt class="text-[10px] font-bold uppercase tracking-[.14em] text-ink-soft">เฉดสี</dt><dd class="mt-1 font-display font-bold text-xl text-tangerine" data-stat="colors">-</dd></div>
+        </dl>
+      </div>
+
+      <div class="lg:col-span-6 relative" id="hero-visual">
+        <div class="absolute -top-4 -right-2 sm:right-6 w-40 h-40 rounded-[2rem] bg-mustard rotate-6" aria-hidden="true"></div>
+        <div class="absolute -bottom-6 left-6 w-28 h-28 rounded-full bg-sage" aria-hidden="true"></div>
+        <a id="hero-main" href="/shop" class="relative block aspect-[4/5] sm:aspect-square lg:aspect-[4/5] rounded-[2.25rem] overflow-hidden bg-cobalt-soft">
+          <div class="w-full h-full skeleton"></div>
+        </a>
+        <!-- การ์ดสินค้าเด่น (เติมข้อมูลจาก API) -->
+        <div id="hero-featured" class="absolute -bottom-8 right-3 sm:right-auto sm:-left-6 w-[230px] sm:w-[260px] rounded-3xl bg-white border border-line p-3 shadow-block animate-rise" hidden></div>
       </div>
     </section>
 
-    <!-- จุดเด่นของร้าน -->
-    <section class="max-w-7xl mx-auto px-4 mt-6">
-      <ul class="grid sm:grid-cols-3 gap-3 text-sm">
-        <li class="card p-4 flex items-center gap-3"><span class="w-10 h-10 rounded-xl bg-cobalt-soft text-cobalt grid place-items-center" data-icon="truck"></span><span><b class="block">ส่งฟรีเมื่อครบ ฿2,500</b><span class="text-ink-soft">จัดส่งทั่วประเทศ 1-3 วัน</span></span></li>
-        <li class="card p-4 flex items-center gap-3"><span class="w-10 h-10 rounded-xl bg-sage-soft text-sage grid place-items-center" data-icon="ruler"></span><span><b class="block">เปลี่ยนไซซ์ได้ 14 วัน</b><span class="text-ink-soft">ไม่พอดีเปลี่ยนได้ฟรี</span></span></li>
-        <li class="card p-4 flex items-center gap-3"><span class="w-10 h-10 rounded-xl bg-tangerine-soft text-tangerine grid place-items-center" data-icon="qr-code"></span><span><b class="block">PromptPay / โอน / ปลายทาง</b><span class="text-ink-soft">เลือกวิธีจ่ายที่สะดวก</span></span></li>
-      </ul>
-    </section>
+    <!-- แถบคำวิ่งสีส้ม เอียงเล็กน้อย -->
+    <div class="mt-20 bg-tangerine text-white overflow-hidden -rotate-1 py-3" aria-hidden="true">
+      <div class="flex animate-marquee whitespace-nowrap font-display font-bold uppercase text-lg tracking-tight" id="band"></div>
+    </div>
 
-    <!-- หมวดหมู่ -->
-    <section class="max-w-7xl mx-auto px-4 mt-16" aria-labelledby="cat-title">
-      <div class="flex items-end justify-between"><div><p class="eyebrow text-cobalt">Categories</p><h2 id="cat-title" class="font-display font-bold text-3xl mt-1">เลือกตามทรง</h2></div></div>
-      <div id="categories" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6"></div>
-    </section>
-
-    <!-- สินค้าใหม่ -->
-    <section class="max-w-7xl mx-auto px-4 mt-16" aria-labelledby="new-title">
-      <div class="flex items-end justify-between gap-4"><div><p class="eyebrow text-tangerine">New Drops</p><h2 id="new-title" class="font-display font-bold text-3xl mt-1">มาใหม่ล่าสุด</h2></div>
-        <a href="/shop?sort=newest" class="link text-sm shrink-0">ดูทั้งหมด</a></div>
-      <div id="new-drops" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6"></div>
-    </section>
-
-    <!-- แถบ Size Guide -->
-    <section class="max-w-7xl mx-auto px-4 mt-16">
-      <div class="rounded-3xl bg-ink text-white p-8 sm:p-10 grid md:grid-cols-2 gap-6 items-center relative overflow-hidden">
-        <div class="absolute right-0 top-0 h-full w-1/3 hidden md:grid grid-rows-4" aria-hidden="true"><span class="bg-cobalt"></span><span class="bg-tangerine"></span><span class="bg-sage"></span><span class="bg-mustard"></span></div>
-        <div><p class="eyebrow text-mustard">Size Guide</p><h2 class="font-display font-bold text-3xl mt-2">ไม่แน่ใจไซซ์? วัดรอบศีรษะแค่ 1 นาที</h2>
-          <p class="text-white/70 mt-3 text-sm leading-relaxed">ใช้สายวัดพันรอบศีรษะเหนือคิ้วและใบหูประมาณ 1 ซม. แล้วเทียบกับตาราง S (54-55 ซม.) ถึง XL (60-61 ซม.)</p></div>
-        <div class="md:pr-[36%]"><a href="/product-detail?slug=everyday-twill-cap#size-guide" class="btn bg-white text-ink hover:bg-mustard h-12 px-6">เปิดตารางไซซ์ <span data-icon="ruler"></span></a></div>
+    <!-- สินค้ายอดนิยม: แท็บเลือกทรง + การ์ดเลื่อนซ้าย-ขวา -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-16" aria-labelledby="trend-title">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div><p class="eyebrow text-cobalt">Trending Drops</p>
+          <h2 id="trend-title" class="mt-2 font-display font-bold uppercase text-3xl sm:text-4xl tracking-tight">Seen on the street</h2></div>
+        <div class="flex items-center gap-2">
+          <button type="button" class="icon-btn-line" data-scroll="-1" aria-label="เลื่อนไปทางซ้าย"><span data-icon="chevron-left" data-cls="w-[18px] h-[18px]"></span></button>
+          <button type="button" class="icon-btn-line" data-scroll="1" aria-label="เลื่อนไปทางขวา"><span data-icon="chevron-right" data-cls="w-[18px] h-[18px]"></span></button>
+        </div>
       </div>
+      <div id="trend-tabs" class="mt-6 flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0" role="tablist" aria-label="เลือกทรงหมวก"></div>
+      <div id="trend" class="mt-6 flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0 pb-2"></div>
+      <div class="mt-6 flex justify-center"><a id="trend-all" href="/shop" class="btn btn-outline">ดูหมวกทั้งหมด <span data-icon="arrow-right" data-cls="w-4 h-4"></span></a></div>
     </section>
 
-    <!-- สินค้าแนะนำ -->
-    <section class="max-w-7xl mx-auto px-4 mt-16" aria-labelledby="all-title">
-      <div class="flex items-end justify-between gap-4"><div><p class="eyebrow text-sage">The Collection</p><h2 id="all-title" class="font-display font-bold text-3xl mt-1">สินค้าแนะนำ</h2></div>
-        <a href="/shop" class="link text-sm shrink-0">ไปหน้าร้าน</a></div>
-      <div id="featured" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6"></div>
+    <!-- การ์ดหมวดหมู่สีทึบ 4 สี -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-16" aria-label="เลือกตามทรง">
+      <div id="categories" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="aspect-square sm:aspect-[4/5] rounded-[2rem] bg-cobalt"></div><div class="aspect-square sm:aspect-[4/5] rounded-[2rem] bg-tangerine"></div>
+        <div class="aspect-square sm:aspect-[4/5] rounded-[2rem] bg-sage"></div><div class="aspect-square sm:aspect-[4/5] rounded-[2rem] bg-mustard"></div>
+      </div>
     </section>
 
     <!-- สินค้าที่เพิ่งดู (แสดงเฉพาะเมื่อยอมรับคุกกี้ Preferences) -->
-    <section id="recent-wrap" class="max-w-7xl mx-auto px-4 mt-16" hidden aria-labelledby="recent-title">
-      <h2 id="recent-title" class="font-display font-bold text-2xl">สินค้าที่คุณเพิ่งดู</h2>
-      <div id="recent" class="flex gap-3 mt-4 overflow-x-auto no-scrollbar pb-2"></div>
+    <section id="recent-wrap" class="max-w-7xl mx-auto px-4 sm:px-6 mt-16" hidden aria-labelledby="recent-title">
+      <p class="eyebrow text-sage">Recently Viewed</p>
+      <h2 id="recent-title" class="mt-2 font-display font-bold text-2xl sm:text-3xl tracking-tight">สินค้าที่คุณเพิ่งดู</h2>
+      <div id="recent" class="flex gap-3 mt-5 overflow-x-auto no-scrollbar pb-2"></div>
     </section>
+
+    <!-- สิทธิพิเศษสมาชิก -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-16">
+      <div class="relative overflow-hidden rounded-[2.25rem] bg-white border border-line p-6 sm:p-10 lg:p-14 grid lg:grid-cols-12 gap-8 items-center">
+        <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-cobalt-soft" aria-hidden="true"></div>
+        <div class="relative lg:col-span-8">
+          <span class="pill bg-mustard-soft text-[#9A5B00]"><span data-icon="gift" data-cls="w-3.5 h-3.5"></span> Member Perk</span>
+          <h2 class="mt-4 font-display font-bold uppercase text-3xl sm:text-5xl tracking-tight leading-[1]">Join the club.<br><span class="text-[0.7em] leading-[1.3] tracking-normal">สมัครสมาชิกฟรี ช้อปไวขึ้นทุกครั้ง</span></h2>
+          <p class="mt-4 max-w-lg text-ink-soft">บันทึกที่อยู่จัดส่งไว้ใช้ครั้งต่อไป ดูประวัติคำสั่งซื้อ และติดตามสถานะพัสดุได้ในที่เดียว</p>
+          <div class="mt-6 flex flex-wrap gap-3" id="perk-actions">
+            <a href="/register" class="btn btn-tangerine btn-lg"><span data-icon="user-plus" data-cls="w-[18px] h-[18px]"></span> สมัครสมาชิก</a>
+            <a href="/login" class="btn btn-outline btn-lg">เข้าสู่ระบบ</a>
+          </div>
+        </div>
+        <div class="relative lg:col-span-4 flex justify-center">
+          <div class="w-52 h-52 sm:w-60 sm:h-60 rounded-full bg-white border-[10px] border-cobalt-soft shadow-xl grid place-items-center text-center">
+            <div><span class="mx-auto w-12 h-12 rounded-full bg-cobalt text-white grid place-items-center" data-icon="truck" data-cls="w-[22px] h-[22px]"></span>
+              <p class="mt-2 font-display font-bold text-4xl tracking-tight" id="perk-free">฿2,500</p>
+              <p class="text-[10px] font-bold uppercase tracking-[.16em] text-tangerine">ส่งฟรีเมื่อช้อปครบ</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <div id="site-footer"></div>

@@ -150,6 +150,7 @@
   }
 
   bindCards($('#grid'));
+  if (KS.param('focus') === 'search') $('#q').focus();   // มาจากปุ่มค้นหาบนแถบหัว
   try { categories = (await api('/api/categories')).categories; } catch { categories = []; }
   load();
 })();

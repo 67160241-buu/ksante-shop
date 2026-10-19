@@ -72,6 +72,7 @@
     return {
       variant_id: v.id, product_id: p.id, slug: p.slug, name: p.name, color_name: v.color_name, color_hex: v.color_hex,
       size: v.size, price: p.price, image_url: v.image_url || p.image_url, quantity, max: Math.min(v.stock, MAX_PER_LINE),
+      category: p.category?.slug || '',
     };
   }
 
@@ -80,7 +81,7 @@
     if (!el) return;
     const n = cart.count();
     el.textContent = n > 99 ? '99+' : String(n);
-    el.hidden = n === 0;
+    el.hidden = false;           // ปุ่มตะกร้าแสดงจำนวนเสมอ (รวม 0)
   }
 
   /** แถบความคืบหน้าส่งฟรี */
@@ -98,7 +99,7 @@
   KS.cartLine = function (i, problem) {
     const atMax = i.quantity >= (i.max ?? MAX_PER_LINE);
     return `<li class="flex gap-3 py-4 border-b border-line last:border-0" data-variant="${i.variant_id}">
-      <a href="/product-detail?slug=${encodeURIComponent(i.slug)}" class="w-20 h-20 rounded-xl overflow-hidden bg-mist shrink-0">${KS.img(i.image_url, i.name, 'w-full h-full object-cover')}</a>
+      <a href="/product-detail?slug=${encodeURIComponent(i.slug)}" class="w-20 h-20 rounded-xl overflow-hidden bg-mist shrink-0">${KS.img(i.image_url, i.name, 'w-full h-full object-cover', { cat: i.category, hex: i.color_hex })}</a>
       <div class="flex-1 min-w-0">
         <div class="flex justify-between gap-2"><a href="/product-detail?slug=${encodeURIComponent(i.slug)}" class="font-bold text-sm leading-tight hover:text-cobalt">${KS.esc(i.name)}</a>
           <button class="text-ink-soft hover:text-danger shrink-0" data-remove aria-label="ลบ ${KS.esc(i.name)} ออกจากตะกร้า">${KS.icon('trash2', 'w-4 h-4')}</button></div>

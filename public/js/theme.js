@@ -26,13 +26,21 @@
     --color-danger: #DC2626;
     --color-danger-soft: #FEE2E2;
 
-    --shadow-block: 4px 4px 0 0 #111318;
-    --shadow-block-sm: 2px 2px 0 0 #111318;
+    /* เงานุ่มแบบลอยตัว (ใช้กับการ์ดและแผงต่าง ๆ) */
+    --shadow-block: 0 24px 48px -24px rgba(17, 19, 24, .35);
+    --shadow-block-sm: 0 10px 24px -12px rgba(17, 19, 24, .45);
+
+    --animate-marquee: marquee 38s linear infinite;
+    --animate-rise: rise .45s cubic-bezier(.2,.8,.2,1) both;
+    --animate-pop: pop-in .38s cubic-bezier(.34,1.56,.64,1);
   }
+  @keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+  @keyframes pop-in { 0% { transform: scale(.82) } 60% { transform: scale(1.12) } 100% { transform: scale(1) } }
 
   @layer components {
     /* ปุ่มแบบ Tactile: กดแล้วยุบลงเล็กน้อย */
-    .btn { @apply inline-flex items-center justify-center gap-2 h-11 px-5 rounded-full font-bold text-sm transition duration-150 select-none
+    .btn { @apply inline-flex items-center justify-center gap-2 h-12 px-6 rounded-full font-bold text-sm transition duration-150 select-none
                  active:translate-y-px active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt; }
     .btn-primary { @apply bg-ink text-white hover:bg-cobalt; }
     .btn-cobalt { @apply bg-cobalt text-white hover:bg-ink; }
@@ -41,20 +49,25 @@
     .btn-ghost { @apply text-ink hover:bg-mist; }
     .btn-danger { @apply bg-danger text-white hover:bg-ink; }
     .btn-sm { @apply h-9 px-4 text-xs; }
-    .icon-btn { @apply inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-mist transition active:scale-95; }
+    .btn-lg { @apply h-14 px-7 text-base; }
+    .icon-btn { @apply inline-flex items-center justify-center w-11 h-11 rounded-full hover:bg-mist transition active:scale-95; }
+    .icon-btn-line { @apply inline-flex items-center justify-center w-11 h-11 rounded-full border border-line bg-white hover:border-ink transition active:scale-95; }
 
-    /* การ์ดเรขาคณิต ขอบคม + เงาบล็อก */
-    .card { @apply bg-white rounded-2xl border border-line; }
-    .card-block { @apply bg-white rounded-2xl border-2 border-ink shadow-block; }
+    /* การ์ดพื้นขาว ขอบบาง มุมโค้งมาก (Colorful Minimal) */
+    .card { @apply bg-white rounded-3xl border border-line; }
+    .card-block { @apply bg-white rounded-[2rem] border border-line shadow-block; }
 
-    .input { @apply w-full h-11 px-4 rounded-xl border border-line bg-white text-sm text-ink placeholder:text-ink-soft/60
+    .input { @apply w-full h-12 px-4 rounded-2xl border border-line bg-white text-sm text-ink placeholder:text-ink-soft/60
                    focus:outline-none focus:border-cobalt focus:ring-4 focus:ring-cobalt/15 transition; }
     textarea.input { @apply h-auto py-3; }
     select.input { @apply pr-10; }
     .label { @apply block text-xs font-bold mb-1.5 text-ink; }
-    .chip { @apply inline-flex items-center gap-1.5 h-9 px-4 rounded-full border border-line bg-white text-xs font-bold transition hover:border-ink; }
+    .chip { @apply inline-flex shrink-0 whitespace-nowrap items-center gap-2 h-10 px-4 rounded-full border border-line bg-white text-sm font-bold transition hover:border-ink active:scale-95; }
     .chip-on { @apply bg-ink text-white border-ink; }
     .eyebrow { @apply text-[11px] font-bold tracking-[0.18em] uppercase; }
+    /* หัวข้อใหญ่: ตัวหนา ตัวพิมพ์ใหญ่ ระยะตัวอักษรชิด */
+    .display { @apply font-display font-bold uppercase tracking-[-0.03em] leading-[0.95]; }
+    .pill { @apply inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em]; }
     .link { @apply font-bold underline underline-offset-4 decoration-2 hover:text-cobalt; }
   }`;
   const style = document.createElement('style');

@@ -23,7 +23,7 @@
     const items = KS.cart.items();
     $('#co-lines').innerHTML = items.map(i => {
       const pr = problems.find(p => p.variant_id === i.variant_id && i.quantity > p.available);
-      return `<li class="flex gap-3 py-3"><span class="relative w-14 h-14 rounded-xl overflow-hidden bg-mist shrink-0">${img(i.image_url, i.name, 'w-full h-full object-cover')}
+      return `<li class="flex gap-3 py-3"><span class="relative w-14 h-14 rounded-xl overflow-hidden bg-mist shrink-0">${img(i.image_url, i.name, 'w-full h-full object-cover', { cat: i.category, hex: i.color_hex })}
         <span class="absolute -top-1 -right-1 min-w-5 h-5 rounded-full bg-ink text-white text-[10px] font-bold grid place-items-center px-1">${i.quantity}</span></span>
         <span class="flex-1 min-w-0 text-sm"><span class="block font-bold truncate">${esc(i.name)}</span><span class="block text-xs text-ink-soft">${esc(i.color_name)} / ${esc(i.size)}</span>
         ${pr ? `<span class="block text-xs font-bold text-danger">${esc(pr.message)}</span>` : ''}</span>
